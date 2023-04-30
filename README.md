@@ -1,6 +1,6 @@
 # EVREAL (Event-based Video Reconstruction Evaluation and Analysis Library)
 
-This is the official code for the CVPRW 2023 paper **EVREAL: Towards a Comprehensive Benchmark and Analysis Suite for Event-based Video Reconstruction** by [Burak Ercan](https://ercanburak.github.io/), [Onur Eker](https://github.com/ekeronur/), [Aykut Erdem](https://aykuterdem.github.io/), and [Erkut Erdem](https://web.cs.hacettepe.edu.tr/~erkut/).
+This is the official repository for the CVPRW 2023 paper **EVREAL: Towards a Comprehensive Benchmark and Analysis Suite for Event-based Video Reconstruction** by [Burak Ercan](https://ercanburak.github.io/), [Onur Eker](https://github.com/ekeronur/), [Aykut Erdem](https://aykuterdem.github.io/), and [Erkut Erdem](https://web.cs.hacettepe.edu.tr/~erkut/).
 
 Codes will be published soon.
 
