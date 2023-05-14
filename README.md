@@ -7,7 +7,9 @@ In this work we present **EVREAL**, an open-source framework that offers a unifi
 ![An overall look at our proposed EVREAL (Event-based Video Reconstruction – Evaluation and Analysis Library) toolkit.](https://ercanburak.github.io/projects/evreal/diagram.png "An overall look at our proposed EVREAL (Event-based Video Reconstruction – Evaluation and Analysis Library) toolkit.")
 
 
-For more details please see our [paper](https://arxiv.org/abs/2305.00434). For qualitative and quantitative experimental analyses please see our [project website](https://ercanburak.github.io/evreal.html).
+For more details please see our [paper](https://arxiv.org/abs/2305.00434). 
+
+For qualitative and quantitative experimental analyses please see our [project website](https://ercanburak.github.io/evreal.html).
 
 Codes will be published soon.
 
