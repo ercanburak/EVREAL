@@ -21,8 +21,10 @@ If you use this library in an academic context, please cite the following:
 @inproceedings{ercan2023evreal,
 title={{EVREAL}: Towards a Comprehensive Benchmark and Analysis Suite for Event-based Video Reconstruction},
 author={Ercan, Burak and Eker, Onur and Erdem, Aykut and Erdem, Erkut},
-booktitle={2023 IEEE/CVF Computer Vision and Pattern Recognition Workshops (CVPRW)},
-year={2023}}
+booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops},
+month={June},
+year={2023},
+pages={3942-3951}}
 ```
 
 ## Acknowledgements
