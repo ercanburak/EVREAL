@@ -9,7 +9,7 @@ In this work we present **EVREAL**, an open-source framework that offers a unifi
 
 For more details please see our [paper](https://arxiv.org/abs/2305.00434). 
 
-For qualitative and quantitative experimental analyses please see our [project website](https://ercanburak.github.io/evreal.html).
+For qualitative and quantitative experimental analyses please see our [project website](https://ercanburak.github.io/evreal.html), or [interactive demo](https://ercanburak-evreal.hf.space/).
 
 Codes will be published soon.
 
