@@ -15,6 +15,7 @@ Codes will be published soon.
 
 ## News
 
+- The web application of our Result Analysis Tool is ready now. [Try it here](https://ercanburak-evreal.hf.space/) to interactively visualize and compare qualitative and quantitative results of event-based video reconstruction methods.
 - We will present our work at the CVPR Workshop on Event-Based Vision in person, on the 19th of June 2023, during Session 2 (starting at 10:30 local time). Please see the [workshop website](https://tub-rip.github.io/eventvision2023/) for details.
 
 ## Citations
