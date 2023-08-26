@@ -1,0 +1,11 @@
+numpy
+embag
+gdown
+tqdm
+opencv-python
+--extra-index-url https://rospypi.github.io/simple/
+rospy
+cv-bridge
+sensor_msgs
+std_msgs
+geometry_msgs

@@ -1,0 +1,6 @@
+{
+	"model_name": "E2VID",
+	"model_path": "pretrained/E2VID/model.pth",
+	"event_tensor_normalization": true,
+	"post_process_norm": "robust"
+}

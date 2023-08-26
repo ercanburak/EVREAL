@@ -1,0 +1,16 @@
+ {
+    "root_path": "data/BS_ERGB",
+    "sequences": 
+    {
+        "may29_handheld_01": {},
+        "may29_handheld_02": {},
+        "may29_handheld_03": {},
+        "may29_handheld_04": {},
+        "may29_rooftop_handheld_01": {},
+        "may29_rooftop_handheld_02": {},
+        "may29_rooftop_handheld_03": {},
+        "may29_rooftop_handheld_05": {},
+        "street_crossing_07": {},
+        "street_crossing_08": {}
+    }
+}

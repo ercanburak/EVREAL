@@ -1,0 +1,6 @@
+{
+	"model_name": "SPADE-E2VID",
+	"model_path": "pretrained/SPADE-E2VID/model.pth",
+	"event_tensor_normalization": false,
+	"post_process_norm": "none"
+}

@@ -1,0 +1,36 @@
+{
+    "root_path": "data/MVSEC",
+    "sequences": 
+    {
+        "indoor_flying1_data":
+        {
+            "start_time_s": 10.0,
+            "end_time_s": 70.0
+        },
+        "indoor_flying2_data":
+        {
+            "start_time_s": 10.0,
+            "end_time_s": 70.0
+        },
+        "indoor_flying3_data":
+        {
+            "start_time_s": 10.0,
+            "end_time_s": 70.0
+        },
+        "indoor_flying4_data":
+        {
+            "start_time_s": 10.0,
+            "end_time_s": 19.8
+        },
+        "outdoor_day1_data":
+        {
+            "start_time_s": 0.0,
+            "end_time_s": 60.0
+        },
+        "outdoor_day2_data":
+        {
+            "start_time_s": 100.0,
+            "end_time_s": 160.0
+        }
+    }
+}

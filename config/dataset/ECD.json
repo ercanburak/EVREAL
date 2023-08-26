@@ -1,0 +1,41 @@
+{
+    "root_path": "data/ECD",
+    "sequences": 
+    {
+        "calibration":
+        {
+            "start_time_s": 5.0,
+            "end_time_s": 20.0
+        },
+        "boxes_6dof":
+        {
+            "start_time_s": 5.0,
+            "end_time_s": 20.0
+        },
+        "dynamic_6dof":
+        {
+            "start_time_s": 5.0,
+            "end_time_s": 20.0
+        },
+        "office_zigzag":
+        {
+            "start_time_s": 5.0,
+            "end_time_s": 12.0
+        },
+        "poster_6dof":
+        {
+            "start_time_s": 5.0,
+            "end_time_s": 20.0
+        },
+        "shapes_6dof":
+        {
+            "start_time_s": 5.0,
+            "end_time_s": 20.0
+        },
+        "slider_depth":
+        {
+            "start_time_s": 1.0,
+            "end_time_s": 2.5
+        }
+    }
+}

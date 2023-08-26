@@ -1,0 +1,9 @@
+{
+    "root_path": "data/MVSEC",
+    "sequences": 
+    {
+        "outdoor_night1_data": {},
+        "outdoor_night2_data": {},
+        "outdoor_night3_data": {}
+    }
+}

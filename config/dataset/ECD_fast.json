@@ -1,0 +1,26 @@
+{
+    "root_path": "data/ECD",
+    "sequences": 
+    {
+        "calibration":
+        {
+            "start_time_s": 20.0
+        },
+        "boxes_6dof":
+        {
+            "start_time_s": 20.0
+        },
+        "dynamic_6dof":
+        {
+            "start_time_s": 20.0
+        },
+        "poster_6dof":
+        {
+            "start_time_s": 20.0
+        },
+        "shapes_6dof":
+        {
+            "start_time_s": 20.0
+        }
+    }
+}

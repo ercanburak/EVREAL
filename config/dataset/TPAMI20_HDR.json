@@ -1,0 +1,9 @@
+ {
+    "root_path": "data/TPAMI20",
+    "sequences": 
+    {
+        "hdr_selfie": {},
+        "hdr_sun": {},
+        "hdr_tunnel": {}
+    }
+}

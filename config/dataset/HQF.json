@@ -1,0 +1,20 @@
+{
+    "root_path": "data/HQF",
+    "sequences": 
+    {
+        "bike_bay_hdr": {},
+        "boxes": {},
+        "desk": {},
+        "desk_fast": {},
+        "desk_hand_only": {},
+        "desk_slow": {},
+        "engineering_posters": {},
+        "high_texture_plants": {},
+        "poster_pillar_1": {},
+        "poster_pillar_2": {},
+        "reflective_materials": {},
+        "slow_and_fast_desk": {},
+        "slow_hand": {},
+        "still_life": {}
+    }
+}
