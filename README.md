@@ -1,7 +1,7 @@
 # EVREAL (Event-based Video Reconstruction Evaluation and Analysis Library)
 
 [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://ercanburak-evreal.hf.space/)
-[![arxiv.org](http://img.shields.io/badge/cs.CV-arXiv%3A2207.02696-B31B1B.svg)](https://arxiv.org/abs/2305.00434/)
+[![arxiv.org](http://img.shields.io/badge/cs.CV-arXiv%3A2305.00434-B31B1B.svg)](https://arxiv.org/abs/2305.00434/)
 
 This is the official repository for the [CVPRW 2023](https://tub-rip.github.io/eventvision2023/) paper **[EVREAL: Towards a Comprehensive Benchmark and Analysis Suite for Event-based Video Reconstruction](https://arxiv.org/abs/2305.00434)** by [Burak Ercan](https://ercanburak.github.io/), [Onur Eker](https://github.com/ekeronur/), [Aykut Erdem](https://aykuterdem.github.io/), and [Erkut Erdem](https://web.cs.hacettepe.edu.tr/~erkut/).
 
