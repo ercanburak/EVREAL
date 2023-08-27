@@ -4,4 +4,5 @@ scikit-image
 einops
 ffmpeg-python
 yachalk
-git+https://github.com/chaofengc/IQA-PyTorch.git@08f88508f71eaf02234ebd04aeda091fdc3ab8e7
+pyiqa
+tabulate
