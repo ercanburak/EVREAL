@@ -93,7 +93,7 @@ class SsimMetric(BaseMetric):
         self.use_sample_covariance = use_sample_covariance
 
     def calculate(self, img, ref):
-        score = ssim(ref, img, gaussian_weights=True, sigma=1.5, use_sample_covariance=False)
+        score = ssim(ref, img, gaussian_weights=True, sigma=1.5, use_sample_covariance=False, data_range=1.0)
         return score
 
 
