@@ -275,7 +275,7 @@ class EvalMetricsTracker:
         metric_file_path = join(self.output_dir, metric_name + '.txt')
         if idx == 0:
             open(metric_file_path, 'w', encoding="utf-8").close()  # overwrite with emptiness
-            append_result(metric_file_path, idx, metric_value, is_int)
+        append_result(metric_file_path, idx, metric_value, is_int)
 
     def get_num_quan_evaluations(self):
         return self.number_of_quan_evals
