@@ -259,9 +259,18 @@ class MemMapDataset(Dataset):
 
         assert (len(self.frame_ts) == self.num_frames), "Number of frames and timestamps do not match"
         self.filehandle = data
-        metadata_path = os.path.join(data_path, "metadata.json")
-        metadata = read_json(metadata_path)
-        self.sensor_resolution = metadata["sensor_resolution"]
+        if self.sensor_resolution is None:
+            metadata_path = os.path.join(data_path, "metadata.json")
+            if os.path.exists(metadata_path):
+                metadata = read_json(metadata_path)
+                self.sensor_resolution = metadata["sensor_resolution"]
+            else:
+                # get sensor resolution from data
+                if self.has_images and self.num_frames > 0:
+                    self.sensor_resolution = self.filehandle["images"][0].shape[:2]
+                else:
+                    self.sensor_resolution = [np.max(self.filehandle["xy"][:, 1]) + 1,
+                                              np.max(self.filehandle["xy"][:, 0]) + 1]
 
     def find_ts_index(self, timestamp):
         index = np.searchsorted(self.filehandle["t"], timestamp)
