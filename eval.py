@@ -45,6 +45,7 @@ def get_sequences(dataset_config, dataset_kwargs):
     dataset_root = dataset_config['root_path']
     get_all_sequences = dataset_config.get('get_all_sequences', False)
     has_subfolders = dataset_config.get('has_subfolders', False)
+    dataset_kwargs.update(dataset_config.get('dataset_kwargs', {}))
     sequences = []
 
     if get_all_sequences:
