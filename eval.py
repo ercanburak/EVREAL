@@ -208,6 +208,7 @@ def eval_method_on_sequence(dataset_name, eval_config, method_name, model, metho
         if pred_frame_ts < sequence['start_time_s'] - 10 and not eval_infer_all:
             continue
         if pred_frame_ts > sequence['end_time_s'] and not eval_infer_all:
+            idx -= 1
             break
         if item['event_count'].item() <= 1 or item['dt'].item() == 0:
             event_rate = 0
@@ -227,7 +228,7 @@ def eval_method_on_sequence(dataset_name, eval_config, method_name, model, metho
             ref_frame = torch2cv2(ref_frame)
         eval_metrics_tracker.update(idx, image, ref_frame, pred_frame_ts, ref_frame_ts)
         eval_metrics_tracker.save_custom_metric(idx, "event_rate", event_rate)
-    eval_metrics_tracker.finalize(idx - 1)
+    eval_metrics_tracker.finalize(idx)
     num_evaluated = eval_metrics_tracker.get_num_quan_evaluations()
     mean_scores = eval_metrics_tracker.get_mean_scores()
     if eval_config['create_video']:
