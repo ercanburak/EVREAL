@@ -188,7 +188,7 @@ class EvalMetricsTracker:
         self.quan_eval_end_time = quan_eval_end_time
         self.quan_eval_ts_tol_ms = quan_eval_ts_tol_ms
         self.has_reference_frames = has_reference_frames
-        self.number_of_quan_evals = 0
+        self.quan_eval_indices = []
 
         if self.hist_eq == 'none' and self.save_processed_images:
             print("Can not save processed images when hist_eq is none")
@@ -220,7 +220,7 @@ class EvalMetricsTracker:
         num_updated = metric.get_num_updated()
         if num_updated > 0:
             last_scores = metric.get_last_scores(num_updated)
-            indices = list(np.arange(idx - num_updated + 1, idx + 1))
+            indices = self.quan_eval_indices[-num_updated:]
             append_result(metric_file_path, indices, last_scores)
 
     def finalize(self, idx):
@@ -229,7 +229,7 @@ class EvalMetricsTracker:
             self.save_new_scores(idx, metric)
 
     def update_quantitative_metrics(self, idx, img, ref):
-        self.number_of_quan_evals += 1
+        self.quan_eval_indices.append(idx)
         for metric in self.metrics:
             try:
                 if not self.has_reference_frames or metric.no_ref:
@@ -278,7 +278,7 @@ class EvalMetricsTracker:
         append_result(metric_file_path, idx, metric_value, is_int)
 
     def get_num_quan_evaluations(self):
-        return self.number_of_quan_evals
+        return len(self.quan_eval_indices)
 
     def create_video(self):
         if self.save_images:
