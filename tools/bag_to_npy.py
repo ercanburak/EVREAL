@@ -38,9 +38,16 @@ def bag_to_npy(bag_path, output_pth, event_topic, image_topic):
             timestamp = timestamp_float(msg.header.stamp)
             image_ts_list.append(timestamp)
             image = CvBridge().imgmsg_to_cv2(msg, "mono8")
-            image_list.append(image)
             if sensor_size is None:
                 sensor_size = image.shape[:2]
+            elif sensor_size != image.shape[:2]:
+                print("Warning: sensor size mismatch. Expected {}, got {}".format(sensor_size, image.shape[:2]))
+                # pad image to same size
+                padded_image = np.zeros(sensor_size, dtype=np.uint8)
+                padded_image[:image.shape[0], :image.shape[1]] = image
+                image = padded_image
+            image_list.append(image)
+
     bag.close()
 
     events_ts = np.array(ts)
