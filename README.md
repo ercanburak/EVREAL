@@ -24,9 +24,9 @@ For qualitative and quantitative experimental analyses please see our [project w
 
 Installing the packages required for evaluation, in a conda environment named `evreal`:
 ```
-conda create -y -n evreal python=3.8
+conda create -y -n evreal python=3.10
 conda activate evreal
-conda install pytorch torchvision pytorch-cuda=11.7 -c pytorch -c nvidia
+conda install pytorch torchvision pytorch-cuda=12.1 -c pytorch -c nvidia
 pip install -r requirements.txt
 ```
 
