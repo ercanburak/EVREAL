@@ -249,6 +249,8 @@ class MetricTracker:
         self.data_dict[key]['average'] = 0.0
 
     def update(self, key, value, count=1):
+        if count == 0:
+            return
         if key not in self.data_dict:
             self.init_key(key)
         self.data_dict[key]['total'] += value * count
@@ -259,6 +261,11 @@ class MetricTracker:
         if key not in self.data_dict:
             self.init_key(key)
         return self.data_dict[key]['average']
+
+    def get_count(self, key):
+        if key not in self.data_dict:
+            self.init_key(key)
+        return self.data_dict[key]['count']
 
 
 def print_scores(all_metrics, method_names, dataset_names, config_name):
@@ -272,7 +279,8 @@ def print_scores(all_metrics, method_names, dataset_names, config_name):
         for dataset_name, dataset_metrics in zip(dataset_names, method_metrics):
             for idx, metric in enumerate(dataset_metrics.data_dict):
                 if idx == 0:
-                    headers.append(dataset_name + "\n" + metric.upper())
+                    num_eval = dataset_metrics.get_count(metric)
+                    headers.append(dataset_name + f' ({num_eval})' + "\n" + metric.upper())
                 else:
                     headers.append("\n" + metric.upper())
                 weighted_average_score = dataset_metrics.get_average(metric)
