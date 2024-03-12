@@ -56,9 +56,16 @@ def bag_to_npy(bag_path, output_pth, event_topic, image_topic):
     # assert np.all(events_ts[:-1] <= events_ts[1:])
 
     images = np.stack(image_list)
+    images_ts = np.stack(image_ts_list)
+
+    # If some timestamps are erroneous (decreasing), replace them with the average of the surrounding timestamps
+    # (Required for engineering_posters sequence from HQF dataset, where there is an error with images_ts[528])
+    mask = images_ts[:-1] > images_ts[1:]
+    avg_values = (images_ts[:-2] + images_ts[2:]) / 2.0
+    images_ts[1:-1][mask[:-1]] = np.squeeze(avg_values)[mask[:-1]]
+
     images = np.expand_dims(images, axis=-1)
-    images_ts = np.expand_dims(np.stack(image_ts_list), axis=1)
-    # assert np.all(images_ts[:-1] <= images_ts[1:])
+    images_ts = np.expand_dims(images_ts, axis=1)
 
     # zero timestamps
     img_min_ts = np.min(images_ts)
