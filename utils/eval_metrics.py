@@ -205,8 +205,8 @@ class EvalMetricsTracker:
             else:
                 print("Unknown metric " + metric_name)
 
-            if not self.has_reference_frames:
-                self.metrics = [m for m in self.metrics if m.no_ref]
+        if not self.has_reference_frames:
+            self.metrics = [m for m in self.metrics if m.no_ref]
 
         self.reset()
 
