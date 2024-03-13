@@ -1,9 +1,14 @@
+import numpy as np
 import torch
 from torch import nn
+from torchvision import transforms
 
+from model.model_util import copy_states
 from .submodules import ResidualBlock, ConvGRU, ConvLayer
 # local modules
 from .unet import UNetRecurrent
+from utils.color_utils import merge_channels_into_color_image
+from utils.util import CropParameters
 
 
 class FlowNet(nn.Module):
@@ -16,6 +21,14 @@ class FlowNet(nn.Module):
         self.num_bins = unet_kwargs['num_bins']  # legacy
         self.num_encoders = unet_kwargs['num_encoders']  # legacy
         self.unetflow = UNetRecurrent(unet_kwargs)
+
+    @property
+    def states(self):
+        return copy_states(self.unetflow.states)
+
+    @states.setter
+    def states(self, states):
+        self.unetflow.states = states
 
     def reset_states(self):
         self.unetflow.states = [None] * self.unetflow.num_encoders
@@ -30,6 +43,68 @@ class FlowNet(nn.Module):
         return output_dict
 
 
+class ColorNet(nn.Module):
+    """
+    Split the input events into RGBW channels and feed them to an existing
+    recurrent model with states.
+    """
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+        self.channels = {'R': [slice(0, None, 2), slice(0, None, 2)],
+                         'G': [slice(0, None, 2), slice(1, None, 2)],
+                         'B': [slice(1, None, 2), slice(1, None, 2)],
+                         'W': [slice(1, None, 2), slice(0, None, 2)],
+                         'grayscale': [slice(None), slice(None)]}
+        self.reset_states()
+
+    def reset_states(self):
+        self.model.reset_states()
+        self.prev_states = {k: self.model.states for k in self.channels}
+        if hasattr(self.model, 'prev_recs'):
+            self.prev_recs = {k: self.model.prev_recs for k in self.channels}
+        else:
+            self.prev_recs = {k: None for k in self.channels}
+
+
+    @property
+    def num_encoders(self):
+        return self.model.num_encoders
+
+    def forward(self, event_tensor):
+        """
+        :param event_tensor: N x num_bins x H x W
+        :return: output dict with RGB image taking values in [0, 1], and
+                 displacement within event_tensor.
+        """
+        height, width = event_tensor.shape[-2:]
+        crop_halfres = CropParameters(int(width / 2), int(height / 2), self.model.num_encoders)
+        crop_fullres = CropParameters(width, height, self.model.num_encoders)
+        color_events = {}
+        reconstructions_for_each_channel = {}
+        for channel, s in self.channels.items():
+            color_events = event_tensor[:, :, s[0], s[1]]
+            if channel == 'grayscale':
+                color_events = crop_fullres.pad(color_events)
+            else:
+                color_events = crop_halfres.pad(color_events)
+            self.model.states = self.prev_states[channel]
+            self.model.prev_recs = self.prev_recs[channel]
+            img = self.model(color_events)['image']
+            self.prev_states[channel] = self.model.states
+            self.prev_recs[channel] = self.model.prev_recs
+            if channel == 'grayscale':
+                img = crop_fullres.crop(img)
+            else:
+                img = crop_halfres.crop(img)
+            img = img[0, 0, ...].cpu().numpy()
+            img = np.clip(img * 255, 0, 255).astype(np.uint8)
+            reconstructions_for_each_channel[channel] = img
+        image_bgr = merge_channels_into_color_image(reconstructions_for_each_channel)  # H x W x 3
+        image_bgr = transforms.functional.to_tensor(image_bgr)
+        return {'image': image_bgr}
+
+
 class E2VIDRecurrent(nn.Module):
     """
     Compatible with E2VID_lightweight
@@ -42,6 +117,14 @@ class E2VIDRecurrent(nn.Module):
         self.num_encoders = unet_kwargs['num_encoders']  # legacy
         self.unetrecurrent = UNetRecurrent(unet_kwargs)
         self.prev_recs = None
+
+    @property
+    def states(self):
+        return copy_states(self.unetrecurrent.states)
+
+    @states.setter
+    def states(self, states):
+        self.unetrecurrent.states = states
 
     def reset_states(self):
         self.unetrecurrent.states = [None] * self.unetrecurrent.num_encoders
@@ -80,6 +163,14 @@ class FireNet(nn.Module):
         self.pred = ConvLayer(base_num_channels, out_channels=1, kernel_size=1, activation=None)
         self.num_recurrent_units = 2
         self.reset_states()
+
+    @property
+    def states(self):
+        return copy_states(self._states)
+
+    @states.setter
+    def states(self, states):
+        self._states = states
 
     def reset_states(self):
         self._states = [None] * self.num_recurrent_units

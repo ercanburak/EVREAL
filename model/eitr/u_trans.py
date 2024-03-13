@@ -2,7 +2,7 @@ import torch
 from einops import rearrange
 from torch import nn
 
-from model.model_util import skip_sum
+from model.model_util import skip_sum, copy_states
 from model.submodules import ConvLayer, RecurrentConvLayer, UpsampleConvLayer
 from .position_encoding import build_position_encoding
 from .transformer_decoder import transformer_decoder
@@ -53,10 +53,18 @@ class mls_tpa(nn.Module):
                               activation=None)
         self.final_activation = torch.sigmoid
         self.skip_ftn = skip_sum
-        self.states = [None] * 3
+        self.reset_states()
+
+    @property
+    def states(self):
+        return copy_states(self._states)
+
+    @states.setter
+    def states(self, states):
+        self._states = states
 
     def reset_states(self):
-        self.states = [None] * 3
+        self._states = [None] * 3
 
     def func(self, x):
         """
@@ -71,9 +79,9 @@ class mls_tpa(nn.Module):
         # downsample conv
         blocks = []
         for i, body in enumerate(self.DownsampleConv):
-            x, state = body(x, self.states[i])
+            x, state = body(x, self._states[i])
             blocks.append(x)
-            self.states[i] = state
+            self._states[i] = state
 
         # ************* path to transformer
         n, c, H, W = head.size()

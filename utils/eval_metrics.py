@@ -177,7 +177,7 @@ class EvalMetricsTracker:
 
     def __init__(self, save_images=False, save_processed_images=False, output_dir=None, hist_eq='none',
                  quan_eval_metric_names=None, quan_eval_start_time=0, quan_eval_end_time=float('inf'),
-                 quan_eval_ts_tol_ms=float('inf'), has_reference_frames=False):
+                 quan_eval_ts_tol_ms=float('inf'), has_reference_frames=False, color=False):
         if quan_eval_metric_names is None:
             quan_eval_metric_names = ['mse', 'ssim', 'lpips']
         self.save_images = save_images
@@ -188,6 +188,7 @@ class EvalMetricsTracker:
         self.quan_eval_end_time = quan_eval_end_time
         self.quan_eval_ts_tol_ms = quan_eval_ts_tol_ms
         self.has_reference_frames = has_reference_frames
+        self.color = color
         self.quan_eval_indices = []
 
         if self.hist_eq == 'none' and self.save_processed_images:
@@ -268,7 +269,7 @@ class EvalMetricsTracker:
         inside_eval_cut = self.quan_eval_start_time <= img_ts <= self.quan_eval_end_time
         img_ref_time_diff_ms = abs(ref_ts - img_ts) * 1000
         inside_eval_ts_tolerance = img_ref_time_diff_ms <= self.quan_eval_ts_tol_ms
-        if inside_eval_cut and inside_eval_ts_tolerance:
+        if inside_eval_cut and inside_eval_ts_tolerance and not self.color:
             self.update_quantitative_metrics(idx, img, ref)
 
     def save_custom_metric(self, idx, metric_name, metric_value, is_int=False):

@@ -15,6 +15,7 @@ For more details please see our [paper](https://arxiv.org/abs/2305.00434).
 For qualitative and quantitative experimental analyses please see our [project website](https://ercanburak.github.io/evreal.html), or [interactive demo](https://ercanburak-evreal.hf.space/).
 
 ## News
+- Codes for color reconstruction added.
 - Evaluation codes are published now. Please see below for [installation](#installation), [dataset preparation](#preparing-datasets) and [usage](#usage) instructions. (Codes for robustness analysis and downstream tasks will be published soon.)
 - In our [result analysis tool](https://ercanburak-evreal.hf.space/), we also share results of **a new state-of-the-art model, HyperE2VID,** which generates higher-quality videos than previous state-of-the-art, while also reducing memory consumption and inference time. Please see the [HyperE2VID webpage](https://ercanburak.github.io/HyperE2VID.html) for more details.
 - The web application of our result analysis tool is ready now. [Try it here](https://ercanburak-evreal.hf.space/) to interactively visualize and compare qualitative and quantitative results of event-based video reconstruction methods.
@@ -100,6 +101,11 @@ python eval.py -m E2VID FireNet E2VID+ FireNet+ SPADE-E2VID SSL-E2VID ET-Net Hyp
 To generate no-reference metric scores for each method on HDR datasets (as in Table 3 of the paper, with the addition of the new method HyperE2VID):
 ```bash
 python eval.py -m E2VID FireNet E2VID+ FireNet+ SPADE-E2VID SSL-E2VID ET-Net HyperE2VID -c t40ms -d TPAMI20_HDR -qm brisque niqe maniqa
+```
+
+To generate color reconstructions on CED dataset:
+```bash
+python eval.py -m HyperE2VID -c color -d CED 
 ```
 
 ## Citations

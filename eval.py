@@ -12,6 +12,7 @@ from tqdm import tqdm
 from yachalk import chalk
 
 import model as model_arch
+from model.model import ColorNet
 from dataset import MemMapDataset
 from utils.eval_metrics import EvalMetricsTracker
 from utils.eval_utils import torch2cv2, normalize
@@ -170,6 +171,7 @@ def get_eval_metrics_tracker(dataset_name, eval_config, method_name, sequence, m
     save_processed_images = save_images and eval_config['histeq'] != 'none'
 
     has_reference_frames = sequence["data_loader"].dataset.has_images
+    color = eval_config.get('color', False)
 
     eval_metrics_tracker = EvalMetricsTracker(save_images=save_images,
                                               save_processed_images=save_processed_images,
@@ -179,7 +181,8 @@ def get_eval_metrics_tracker(dataset_name, eval_config, method_name, sequence, m
                                               quan_eval_start_time=sequence['start_time_s'],
                                               quan_eval_end_time=sequence['end_time_s'],
                                               quan_eval_ts_tol_ms=eval_config['ts_tol_ms'],
-                                              has_reference_frames=has_reference_frames)
+                                              has_reference_frames=has_reference_frames,
+                                              color=color)
     return eval_metrics_tracker
 
 
@@ -195,6 +198,7 @@ def eval_method_on_sequence(dataset_name, eval_config, method_name, model, metho
     eval_infer_all = eval_config.get('eval_infer_all', False)
     post_process_norm = method_config.get('post_process_norm', "none")
     event_tensor_normalization = method_config.get('event_tensor_normalization', False)
+    color = eval_config.get('color', False)
     idx = 0
     for idx, item in enumerate(tqdm(data_loader)):
         if has_reference_frames:
@@ -218,10 +222,14 @@ def eval_method_on_sequence(dataset_name, eval_config, method_name, model, metho
         if event_tensor_normalization:
             voxel = normalize_event_tensor(voxel)
         voxel = voxel.to(device)
-        voxel = cropper.pad(voxel)
+        if not color:
+            voxel = cropper.pad(voxel)
         with CudaTimer(method_name):
             output = model(voxel)
-        image = cropper.crop(output['image'])
+        if not color:
+            image = cropper.crop(output['image'])
+        else:
+            image = output['image']
         image = torch2cv2(image)
         image = post_process_normalization(image, post_process_norm)
         if has_reference_frames:
@@ -331,9 +339,12 @@ def eval_method_with_config(eval_config, method_name, datasets, metrics):
     print(color_progress("Starting method " + method_name))
     checkpoint_path = method_config['model_path']
     model_name = method_config['model_name']
+    color = eval_config.get('color', False)
     method_metrics = []
     try:
         model = get_model_from_checkpoint_path(model_name, checkpoint_path)
+        if color:
+            model = ColorNet(model)
     except Exception as e:
         print(color_error(f"Exception while getting method {method_name} from checkpoint path {checkpoint_path}"))
         print(color_error(e))

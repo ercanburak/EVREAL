@@ -172,7 +172,7 @@ class Unet6(nn.Module):
         x = self.sigmoid(self.bn_img(x))
         self.states = stats
         self.prev_recs = x
-        return {'image': x.mean(1)}
+        return {'image': x.mean(1, keepdim=True)}
 
     def reset_states(self):
         self.states = None
