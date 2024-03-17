@@ -209,6 +209,8 @@ class EvalMetricsTracker:
         if not self.has_reference_frames:
             self.metrics = [m for m in self.metrics if m.no_ref]
 
+        self.only_no_ref = all([m.no_ref for m in self.metrics])
+
         self.reset()
 
     def reset(self):
@@ -269,6 +271,8 @@ class EvalMetricsTracker:
         inside_eval_cut = self.quan_eval_start_time <= img_ts <= self.quan_eval_end_time
         img_ref_time_diff_ms = abs(ref_ts - img_ts) * 1000
         inside_eval_ts_tolerance = img_ref_time_diff_ms <= self.quan_eval_ts_tol_ms
+        if self.only_no_ref:
+            inside_eval_ts_tolerance = True
         if inside_eval_cut and inside_eval_ts_tolerance and not self.color:
             self.update_quantitative_metrics(idx, img, ref)
 
