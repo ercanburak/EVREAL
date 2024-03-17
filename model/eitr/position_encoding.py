@@ -5,7 +5,7 @@ from torch import nn
 
 class PositionalEncodingSine(nn.Module):
 
-    def __init__(self, d_hid, n_position=10000):
+    def __init__(self, d_hid, n_position=20000):
         super().__init__()
 
         # Not a parameter
