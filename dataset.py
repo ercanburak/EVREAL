@@ -88,7 +88,10 @@ class MemMapDataset(Dataset):
                                 dtype=torch.float32, device=voxel.device)
             frame_timestamp = torch.tensor(0.0, dtype=torch.float64)
 
-        voxel_timestamp = torch.tensor(ts_k, dtype=torch.float64)
+        if self.voxel_method['method'] == 'between_frames':
+            voxel_timestamp = frame_timestamp
+        else:
+            voxel_timestamp = torch.tensor(ts_k, dtype=torch.float64)
 
         item = {'frame': frame,
                 'events': voxel,
