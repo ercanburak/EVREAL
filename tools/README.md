@@ -18,3 +18,7 @@ python tools/bag_to_npy.py data/HQF --remove
 ./tools/download_TPAMI20_HDR.sh
 python tools/txt_to_npy.py data/TPAMI20/ --flip --remove
 ```
+**Note:** The BS-ERGB dataset can be downloaded after filling out [this form](https://rpg.ifi.uzh.ch/timelens++download.html) from UZH-RPG. After downloading and unzipping, the following command can be used to convert it to EVREAL format:
+```bash
+tools/prepare_BS_ERGB.sh <BS-ERGB_original_unzipped_dataset_folder>
+```
