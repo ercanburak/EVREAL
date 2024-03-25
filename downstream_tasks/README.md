@@ -8,6 +8,7 @@ python tools/extract_gt_images.py data/MVSEC/outdoor_night1_data/ outputs/std/MV
 conda activate evreal-tools
 cd downstream_tasks/detection
 bash detect_all.sh
+python pascal_voc_map.py
 ```
 
 ### Image Classification
