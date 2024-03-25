@@ -20,3 +20,14 @@ python eval.py -m E2VID FireNet E2VID+ FireNet+ SPADE-E2VID SSL-E2VID ET-Net Hyp
 python tools/organize_NCaltech101_recons.py 
 python downstream_tasks/classification/classifier.py 
 ```
+
+### Camera Calibration
+```bash
+conda activate evreal
+python eval.py -m E2VID FireNet E2VID+ FireNet+ SPADE-E2VID SSL-E2VID ET-Net HyperE2VID -c std_all -d ECD_calib
+python tools/extract_gt_images.py data/ECD/calibration/ outputs/std_all/ECD_calib/calibration/groundtruth
+cd downstream_tasks/calibration/
+conda activate evreal-tools
+bash calib_all.sh
+python get_mape.py
+```
