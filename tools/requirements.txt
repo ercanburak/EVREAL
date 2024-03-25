@@ -9,3 +9,4 @@ cv-bridge
 sensor_msgs
 std_msgs
 geometry_msgs
+yolov7detect
