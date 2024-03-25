@@ -15,6 +15,7 @@ For more details please see our [paper](https://arxiv.org/abs/2305.00434).
 For qualitative and quantitative experimental analyses please see our [project website](https://ercanburak.github.io/evreal.html), or [interactive demo](https://ercanburak-evreal.hf.space/).
 
 ## News
+- Codes for downstream tasks are added. Please refer to the [README file for downstream tasks](downstream_tasks/README.md) for instructions on performing object detection, image classification, and camera calibration experiments. 
 - Codes for color reconstruction added.
 - Evaluation codes are published now. Please see below for [installation](#installation), [dataset preparation](#preparing-datasets) and [usage](#usage) instructions. (Codes for robustness analysis and downstream tasks will be published soon.)
 - In our [result analysis tool](https://ercanburak-evreal.hf.space/), we also share results of **a new state-of-the-art model, HyperE2VID,** which generates higher-quality videos than previous state-of-the-art, while also reducing memory consumption and inference time. Please see the [HyperE2VID webpage](https://ercanburak.github.io/HyperE2VID.html) for more details.
