@@ -1,0 +1,16 @@
+{
+    "dataset_kwargs": {
+        "num_bins": 5,
+        "voxel_method": {
+            "method": "k_events",
+            "k": 20000,
+            "sliding_window_w": 0
+        },
+        "keep_ratio": 1.0
+    },
+    "save_images": false,
+    "histeq": "none",
+    "eval_infer_all": false,
+    "ts_tol_ms": 1.0,
+    "create_video": false
+}
