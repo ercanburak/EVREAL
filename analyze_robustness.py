@@ -38,8 +38,9 @@ def read_event_sparsity_and_lpips(directory):
     """
     data = []
 
-    datasets_list = glob.glob(directory + '/*')
-    for dataset_path in datasets_list:
+    datasets_list = ["ECD", "MVSEC", "HQF"]
+    for dataset_name in datasets_list:
+        dataset_path = os.path.join(directory, dataset_name)
         sequences_list = glob.glob(dataset_path + '/*')
         for sequence_path in sequences_list:
             models_list = glob.glob(sequence_path + '/*')
@@ -230,4 +231,4 @@ if __name__ == "__main__":
     process_directory(base_dir, "t*ms", "duration (ms)", "LPIPS")
     process_directory(base_dir, "k*k", "# of events in groups [K]", "LPIPS")
     process_directory(base_dir, "kr*", "ratio of discarded frames", "LPIPS", lambda x: 1.0 if x == 'std' else 1 - float(x[2:]))
-    process_event_sparsity(os.path.join(base_dir, "event_rate"), "event rate (events/sec.)", "LPIPS")
+    process_event_sparsity(os.path.join(base_dir, "std"), "event rate (events/sec.)", "LPIPS")
