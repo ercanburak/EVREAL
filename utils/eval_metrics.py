@@ -139,10 +139,6 @@ class PyIqaMetricFactory:
             self.scores.extend(score)
 
         def calculate(self, img, ref=None):
-            if self.name in ['ahiq', 'maniqa']:
-                img = cv2.resize(img, (0, 0), fx=2, fy=2)
-                if ref is not None:
-                    ref = cv2.resize(ref, (0, 0), fx=2, fy=2)
             img_tensor = cv2torch(img, num_ch=3)
             ref_tensor = None if ref is None else cv2torch(ref, num_ch=3)
             self.image_queue.append(img_tensor)
