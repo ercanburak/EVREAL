@@ -1,3 +1,6 @@
+cd data
+mkdir FPVDR
+cd FPVDR
 wget http://rpg.ifi.uzh.ch/datasets/uzh-fpv-newer-versions/v3/indoor_45_1_davis.bag
 wget http://rpg.ifi.uzh.ch/datasets/uzh-fpv-newer-versions/v3/indoor_45_2_davis_with_gt.bag
 wget http://rpg.ifi.uzh.ch/datasets/uzh-fpv-newer-versions/v3/indoor_45_3_davis.bag
