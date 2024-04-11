@@ -15,6 +15,7 @@ For more details please see our [paper](https://arxiv.org/abs/2305.00434).
 For qualitative and quantitative experimental analyses please see our [project website](https://ercanburak.github.io/evreal.html), or [interactive demo](https://ercanburak-evreal.hf.space/).
 
 ## News
+- Second version of our EVREAL paper, which includes updated results, is [published at arXiv](https://arxiv.org/abs/2305.00434) now. 
 - Codes for robustness analysis are added. Please see the [example commands](#example-commands) below.
 - Codes for downstream tasks are added. Please refer to the [README file for downstream tasks](downstream_tasks/README.md) for instructions on performing object detection, image classification, and camera calibration experiments. 
 - Codes for color reconstruction added.
