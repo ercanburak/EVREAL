@@ -1,4 +1,5 @@
 import os
+import sys
 
 import ffmpeg
 
@@ -18,5 +19,14 @@ def create_vid_from_recon_folder(folder_path, extension="mp4"):
         os.remove(vid_path)
     stream = ffmpeg.input(frame_paths, framerate=fps)
     stream = ffmpeg.output(stream, vid_path, crf=11, preset='slow')
-    stream = stream.global_args('-loglevel', 'error')
-    ffmpeg.run(stream)
+    try:
+        stream = stream.global_args('-loglevel', 'quiet')
+        ffmpeg.run(stream)
+    except ffmpeg.Error as e:
+        print("Failed with default command, trying with /usr/bin/ffmpeg.")
+        stream = stream.global_args('-loglevel', 'error')
+        ffmpeg.run(stream, cmd="/usr/bin/ffmpeg")
+
+
+if __name__ == "__main__":
+    create_vid_from_recon_folder(sys.argv[1])
