@@ -108,6 +108,11 @@ if __name__ == "__main__":
         print("Processing {}".format(path))
         output_pth = os.path.splitext(path)[0]
         os.makedirs(output_pth, exist_ok=True)
-        bag_to_npy(path, output_pth, args.event_topic, args.image_topic)
+        try:
+            bag_to_npy(path, output_pth, args.event_topic, args.image_topic)
+        except Exception as e:
+            print("Failed to convert {}".format(path))
+            print(e)
+            continue
         if args.remove:
             os.remove(path)
