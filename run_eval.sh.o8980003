@@ -1,0 +1,98 @@
+True
+Started evaluating methods E2VID+, myE2VID, FireNet+, myFireNet, SPADE-E2VID, mySPADE, ET-Net, HyperE2VID, CISTA-LSTC, CISTA-EIFlow and CISTA-ERAFT on ECD_fast dataset with low_k_events evaluation config
+Starting method E2VID+
+Evaluating E2VID+ method with low_k_events evaluation config on calibration sequence from ECD_fast dataset. (1/5 for this method and config)
+Evaluating E2VID+ method with low_k_events evaluation config on boxes_6dof sequence from ECD_fast dataset. (2/5 for this method and config)
+Evaluating E2VID+ method with low_k_events evaluation config on dynamic_6dof sequence from ECD_fast dataset. (3/5 for this method and config)
+Evaluating E2VID+ method with low_k_events evaluation config on poster_6dof sequence from ECD_fast dataset. (4/5 for this method and config)
+Evaluating E2VID+ method with low_k_events evaluation config on shapes_6dof sequence from ECD_fast dataset. (5/5 for this method and config)
+Starting method myE2VID
+Evaluating myE2VID method with low_k_events evaluation config on calibration sequence from ECD_fast dataset. (1/5 for this method and config)
+Evaluating myE2VID method with low_k_events evaluation config on boxes_6dof sequence from ECD_fast dataset. (2/5 for this method and config)
+Evaluating myE2VID method with low_k_events evaluation config on dynamic_6dof sequence from ECD_fast dataset. (3/5 for this method and config)
+Evaluating myE2VID method with low_k_events evaluation config on poster_6dof sequence from ECD_fast dataset. (4/5 for this method and config)
+Evaluating myE2VID method with low_k_events evaluation config on shapes_6dof sequence from ECD_fast dataset. (5/5 for this method and config)
+Starting method FireNet+
+Evaluating FireNet+ method with low_k_events evaluation config on calibration sequence from ECD_fast dataset. (1/5 for this method and config)
+Evaluating FireNet+ method with low_k_events evaluation config on boxes_6dof sequence from ECD_fast dataset. (2/5 for this method and config)
+Evaluating FireNet+ method with low_k_events evaluation config on dynamic_6dof sequence from ECD_fast dataset. (3/5 for this method and config)
+Evaluating FireNet+ method with low_k_events evaluation config on poster_6dof sequence from ECD_fast dataset. (4/5 for this method and config)
+Evaluating FireNet+ method with low_k_events evaluation config on shapes_6dof sequence from ECD_fast dataset. (5/5 for this method and config)
+Starting method myFireNet
+Evaluating myFireNet method with low_k_events evaluation config on calibration sequence from ECD_fast dataset. (1/5 for this method and config)
+Evaluating myFireNet method with low_k_events evaluation config on boxes_6dof sequence from ECD_fast dataset. (2/5 for this method and config)
+Evaluating myFireNet method with low_k_events evaluation config on dynamic_6dof sequence from ECD_fast dataset. (3/5 for this method and config)
+Evaluating myFireNet method with low_k_events evaluation config on poster_6dof sequence from ECD_fast dataset. (4/5 for this method and config)
+Evaluating myFireNet method with low_k_events evaluation config on shapes_6dof sequence from ECD_fast dataset. (5/5 for this method and config)
+Starting method SPADE-E2VID
+Evaluating SPADE-E2VID method with low_k_events evaluation config on calibration sequence from ECD_fast dataset. (1/5 for this method and config)
+Evaluating SPADE-E2VID method with low_k_events evaluation config on boxes_6dof sequence from ECD_fast dataset. (2/5 for this method and config)
+Evaluating SPADE-E2VID method with low_k_events evaluation config on dynamic_6dof sequence from ECD_fast dataset. (3/5 for this method and config)
+Evaluating SPADE-E2VID method with low_k_events evaluation config on poster_6dof sequence from ECD_fast dataset. (4/5 for this method and config)
+Evaluating SPADE-E2VID method with low_k_events evaluation config on shapes_6dof sequence from ECD_fast dataset. (5/5 for this method and config)
+Starting method mySPADE
+Evaluating mySPADE method with low_k_events evaluation config on calibration sequence from ECD_fast dataset. (1/5 for this method and config)
+Evaluating mySPADE method with low_k_events evaluation config on boxes_6dof sequence from ECD_fast dataset. (2/5 for this method and config)
+Evaluating mySPADE method with low_k_events evaluation config on dynamic_6dof sequence from ECD_fast dataset. (3/5 for this method and config)
+Evaluating mySPADE method with low_k_events evaluation config on poster_6dof sequence from ECD_fast dataset. (4/5 for this method and config)
+Evaluating mySPADE method with low_k_events evaluation config on shapes_6dof sequence from ECD_fast dataset. (5/5 for this method and config)
+Starting method ET-Net
+Evaluating ET-Net method with low_k_events evaluation config on calibration sequence from ECD_fast dataset. (1/5 for this method and config)
+Evaluating ET-Net method with low_k_events evaluation config on boxes_6dof sequence from ECD_fast dataset. (2/5 for this method and config)
+Evaluating ET-Net method with low_k_events evaluation config on dynamic_6dof sequence from ECD_fast dataset. (3/5 for this method and config)
+Evaluating ET-Net method with low_k_events evaluation config on poster_6dof sequence from ECD_fast dataset. (4/5 for this method and config)
+Evaluating ET-Net method with low_k_events evaluation config on shapes_6dof sequence from ECD_fast dataset. (5/5 for this method and config)
+Starting method HyperE2VID
+Evaluating HyperE2VID method with low_k_events evaluation config on calibration sequence from ECD_fast dataset. (1/5 for this method and config)
+Evaluating HyperE2VID method with low_k_events evaluation config on boxes_6dof sequence from ECD_fast dataset. (2/5 for this method and config)
+Evaluating HyperE2VID method with low_k_events evaluation config on dynamic_6dof sequence from ECD_fast dataset. (3/5 for this method and config)
+Evaluating HyperE2VID method with low_k_events evaluation config on poster_6dof sequence from ECD_fast dataset. (4/5 for this method and config)
+Evaluating HyperE2VID method with low_k_events evaluation config on shapes_6dof sequence from ECD_fast dataset. (5/5 for this method and config)
+Starting method CISTA-LSTC
+Evaluating CISTA-LSTC method with low_k_events evaluation config on calibration sequence from ECD_fast dataset. (1/5 for this method and config)
+Evaluating CISTA-LSTC method with low_k_events evaluation config on boxes_6dof sequence from ECD_fast dataset. (2/5 for this method and config)
+Evaluating CISTA-LSTC method with low_k_events evaluation config on dynamic_6dof sequence from ECD_fast dataset. (3/5 for this method and config)
+Evaluating CISTA-LSTC method with low_k_events evaluation config on poster_6dof sequence from ECD_fast dataset. (4/5 for this method and config)
+Evaluating CISTA-LSTC method with low_k_events evaluation config on shapes_6dof sequence from ECD_fast dataset. (5/5 for this method and config)
+Starting method CISTA-EIFlow
+Evaluating CISTA-EIFlow method with low_k_events evaluation config on calibration sequence from ECD_fast dataset. (1/5 for this method and config)
+Evaluating CISTA-EIFlow method with low_k_events evaluation config on boxes_6dof sequence from ECD_fast dataset. (2/5 for this method and config)
+Evaluating CISTA-EIFlow method with low_k_events evaluation config on dynamic_6dof sequence from ECD_fast dataset. (3/5 for this method and config)
+Evaluating CISTA-EIFlow method with low_k_events evaluation config on poster_6dof sequence from ECD_fast dataset. (4/5 for this method and config)
+Evaluating CISTA-EIFlow method with low_k_events evaluation config on shapes_6dof sequence from ECD_fast dataset. (5/5 for this method and config)
+Starting method CISTA-ERAFT
+Evaluating CISTA-ERAFT method with low_k_events evaluation config on calibration sequence from ECD_fast dataset. (1/5 for this method and config)
+Evaluating CISTA-ERAFT method with low_k_events evaluation config on boxes_6dof sequence from ECD_fast dataset. (2/5 for this method and config)
+Evaluating CISTA-ERAFT method with low_k_events evaluation config on dynamic_6dof sequence from ECD_fast dataset. (3/5 for this method and config)
+Evaluating CISTA-ERAFT method with low_k_events evaluation config on poster_6dof sequence from ECD_fast dataset. (4/5 for this method and config)
+Evaluating CISTA-ERAFT method with low_k_events evaluation config on shapes_6dof sequence from ECD_fast dataset. (5/5 for this method and config)
+Finished evaluating methods E2VID+, myE2VID, FireNet+, myFireNet, SPADE-E2VID, mySPADE, ET-Net, HyperE2VID, CISTA-LSTC, CISTA-EIFlow and CISTA-ERAFT on ECD_fast dataset with low_k_events evaluation config
+
+Image Quality Scores (for low_k_events config)
+                ECD_fast
+Method           BRISQUE    NIQE
+------------  ----------  ------
+E2VID+            22.783   6.951
+myE2VID           30.862   9.126
+FireNet+          16.248   5.484
+myFireNet         32.515   7.654
+SPADE-E2VID       14.336   7.377
+mySPADE           28.771   9.079
+ET-Net            22.387   7.379
+HyperE2VID        17.484   6.807
+CISTA-LSTC        28.680   8.761
+CISTA-EIFlow      28.757   9.726
+CISTA-ERAFT       27.941   9.485
+
+== Timing statistics ==
+E2VID+: 5.44 ms (22375 samples)
+myE2VID: 4.68 ms (22375 samples)
+FireNet+: 1.25 ms (22375 samples)
+myFireNet: 1.39 ms (22375 samples)
+SPADE-E2VID: 12.58 ms (22375 samples)
+mySPADE: 12.53 ms (22375 samples)
+ET-Net: 27.31 ms (22375 samples)
+HyperE2VID: 6.05 ms (22375 samples)
+CISTA-LSTC: 5.33 ms (22375 samples)
+CISTA-EIFlow: 37.46 ms (22375 samples)
+CISTA-ERAFT: 54.83 ms (22375 samples)

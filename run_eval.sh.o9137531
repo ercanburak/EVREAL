@@ -1,0 +1,177 @@
+True
+Started evaluating methods CISTA, CISTA-D, CISTA-LSTC-d1, CISTA-LSTC-d3, CISTA-LSTC-d5, CISTA-LSTC-d7 and CISTA-LSTM on ECD and HQF datasets with low_k_events evaluation config
+Starting method CISTA
+Evaluating CISTA method with low_k_events evaluation config on calibration sequence from ECD dataset. (1/21 for this method and config)
+Loading pretrained model LPIPS from /rds/general/user/sl220/home/.cache/torch/hub/checkpoints/LPIPS_v0.1_alex-df73285e.pth
+Evaluating CISTA method with low_k_events evaluation config on boxes_6dof sequence from ECD dataset. (2/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on dynamic_6dof sequence from ECD dataset. (3/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on office_zigzag sequence from ECD dataset. (4/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on poster_6dof sequence from ECD dataset. (5/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on shapes_6dof sequence from ECD dataset. (6/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on slider_depth sequence from ECD dataset. (7/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on bike_bay_hdr sequence from HQF dataset. (8/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on boxes sequence from HQF dataset. (9/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on desk sequence from HQF dataset. (10/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on desk_fast sequence from HQF dataset. (11/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on desk_hand_only sequence from HQF dataset. (12/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on desk_slow sequence from HQF dataset. (13/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on engineering_posters sequence from HQF dataset. (14/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on high_texture_plants sequence from HQF dataset. (15/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on poster_pillar_1 sequence from HQF dataset. (16/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on poster_pillar_2 sequence from HQF dataset. (17/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on reflective_materials sequence from HQF dataset. (18/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on slow_and_fast_desk sequence from HQF dataset. (19/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on slow_hand sequence from HQF dataset. (20/21 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on still_life sequence from HQF dataset. (21/21 for this method and config)
+Starting method CISTA-D
+Exception while getting method CISTA-D from checkpoint path pretrained/CISTA-LSTC/cista-D.pth.tar
+[Errno 2] No such file or directory: 'pretrained/CISTA-LSTC/cista-D.pth.tar'
+Traceback (most recent call last):
+  File "/rds/general/user/sl220/home/projects/EVREAL/eval.py", line 414, in eval_method_with_config
+    model = get_model_from_checkpoint_path(model_name, checkpoint_path, model_mode) #-----
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/projects/EVREAL/eval.py", line 131, in get_model_from_checkpoint_path
+    checkpoint = torch.load(checkpoint_path, device)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/anaconda3/envs/py311/lib/python3.11/site-packages/torch/serialization.py", line 986, in load
+    with _open_file_like(f, 'rb') as opened_file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/anaconda3/envs/py311/lib/python3.11/site-packages/torch/serialization.py", line 435, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/anaconda3/envs/py311/lib/python3.11/site-packages/torch/serialization.py", line 416, in __init__
+    super().__init__(open(name, mode))
+                     ^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'pretrained/CISTA-LSTC/cista-D.pth.tar'
+
+Starting method CISTA-LSTC-d1
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on calibration sequence from ECD dataset. (1/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on boxes_6dof sequence from ECD dataset. (2/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on dynamic_6dof sequence from ECD dataset. (3/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on office_zigzag sequence from ECD dataset. (4/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on poster_6dof sequence from ECD dataset. (5/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on shapes_6dof sequence from ECD dataset. (6/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on slider_depth sequence from ECD dataset. (7/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on bike_bay_hdr sequence from HQF dataset. (8/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on boxes sequence from HQF dataset. (9/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on desk sequence from HQF dataset. (10/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on desk_fast sequence from HQF dataset. (11/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on desk_hand_only sequence from HQF dataset. (12/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on desk_slow sequence from HQF dataset. (13/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on engineering_posters sequence from HQF dataset. (14/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on high_texture_plants sequence from HQF dataset. (15/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on poster_pillar_1 sequence from HQF dataset. (16/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on poster_pillar_2 sequence from HQF dataset. (17/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on reflective_materials sequence from HQF dataset. (18/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on slow_and_fast_desk sequence from HQF dataset. (19/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on slow_hand sequence from HQF dataset. (20/21 for this method and config)
+Evaluating CISTA-LSTC-d1 method with low_k_events evaluation config on still_life sequence from HQF dataset. (21/21 for this method and config)
+Starting method CISTA-LSTC-d3
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on calibration sequence from ECD dataset. (1/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on boxes_6dof sequence from ECD dataset. (2/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on dynamic_6dof sequence from ECD dataset. (3/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on office_zigzag sequence from ECD dataset. (4/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on poster_6dof sequence from ECD dataset. (5/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on shapes_6dof sequence from ECD dataset. (6/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on slider_depth sequence from ECD dataset. (7/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on bike_bay_hdr sequence from HQF dataset. (8/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on boxes sequence from HQF dataset. (9/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on desk sequence from HQF dataset. (10/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on desk_fast sequence from HQF dataset. (11/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on desk_hand_only sequence from HQF dataset. (12/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on desk_slow sequence from HQF dataset. (13/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on engineering_posters sequence from HQF dataset. (14/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on high_texture_plants sequence from HQF dataset. (15/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on poster_pillar_1 sequence from HQF dataset. (16/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on poster_pillar_2 sequence from HQF dataset. (17/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on reflective_materials sequence from HQF dataset. (18/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on slow_and_fast_desk sequence from HQF dataset. (19/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on slow_hand sequence from HQF dataset. (20/21 for this method and config)
+Evaluating CISTA-LSTC-d3 method with low_k_events evaluation config on still_life sequence from HQF dataset. (21/21 for this method and config)
+Starting method CISTA-LSTC-d5
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on calibration sequence from ECD dataset. (1/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on boxes_6dof sequence from ECD dataset. (2/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on dynamic_6dof sequence from ECD dataset. (3/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on office_zigzag sequence from ECD dataset. (4/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on poster_6dof sequence from ECD dataset. (5/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on shapes_6dof sequence from ECD dataset. (6/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on slider_depth sequence from ECD dataset. (7/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on bike_bay_hdr sequence from HQF dataset. (8/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on boxes sequence from HQF dataset. (9/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on desk sequence from HQF dataset. (10/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on desk_fast sequence from HQF dataset. (11/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on desk_hand_only sequence from HQF dataset. (12/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on desk_slow sequence from HQF dataset. (13/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on engineering_posters sequence from HQF dataset. (14/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on high_texture_plants sequence from HQF dataset. (15/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on poster_pillar_1 sequence from HQF dataset. (16/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on poster_pillar_2 sequence from HQF dataset. (17/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on reflective_materials sequence from HQF dataset. (18/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on slow_and_fast_desk sequence from HQF dataset. (19/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on slow_hand sequence from HQF dataset. (20/21 for this method and config)
+Evaluating CISTA-LSTC-d5 method with low_k_events evaluation config on still_life sequence from HQF dataset. (21/21 for this method and config)
+Starting method CISTA-LSTC-d7
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on calibration sequence from ECD dataset. (1/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on boxes_6dof sequence from ECD dataset. (2/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on dynamic_6dof sequence from ECD dataset. (3/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on office_zigzag sequence from ECD dataset. (4/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on poster_6dof sequence from ECD dataset. (5/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on shapes_6dof sequence from ECD dataset. (6/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on slider_depth sequence from ECD dataset. (7/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on bike_bay_hdr sequence from HQF dataset. (8/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on boxes sequence from HQF dataset. (9/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on desk sequence from HQF dataset. (10/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on desk_fast sequence from HQF dataset. (11/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on desk_hand_only sequence from HQF dataset. (12/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on desk_slow sequence from HQF dataset. (13/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on engineering_posters sequence from HQF dataset. (14/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on high_texture_plants sequence from HQF dataset. (15/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on poster_pillar_1 sequence from HQF dataset. (16/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on poster_pillar_2 sequence from HQF dataset. (17/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on reflective_materials sequence from HQF dataset. (18/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on slow_and_fast_desk sequence from HQF dataset. (19/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on slow_hand sequence from HQF dataset. (20/21 for this method and config)
+Evaluating CISTA-LSTC-d7 method with low_k_events evaluation config on still_life sequence from HQF dataset. (21/21 for this method and config)
+Starting method CISTA-LSTM
+Evaluating CISTA-LSTM method with low_k_events evaluation config on calibration sequence from ECD dataset. (1/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on boxes_6dof sequence from ECD dataset. (2/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on dynamic_6dof sequence from ECD dataset. (3/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on office_zigzag sequence from ECD dataset. (4/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on poster_6dof sequence from ECD dataset. (5/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on shapes_6dof sequence from ECD dataset. (6/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on slider_depth sequence from ECD dataset. (7/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on bike_bay_hdr sequence from HQF dataset. (8/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on boxes sequence from HQF dataset. (9/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on desk sequence from HQF dataset. (10/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on desk_fast sequence from HQF dataset. (11/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on desk_hand_only sequence from HQF dataset. (12/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on desk_slow sequence from HQF dataset. (13/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on engineering_posters sequence from HQF dataset. (14/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on high_texture_plants sequence from HQF dataset. (15/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on poster_pillar_1 sequence from HQF dataset. (16/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on poster_pillar_2 sequence from HQF dataset. (17/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on reflective_materials sequence from HQF dataset. (18/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on slow_and_fast_desk sequence from HQF dataset. (19/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on slow_hand sequence from HQF dataset. (20/21 for this method and config)
+Evaluating CISTA-LSTM method with low_k_events evaluation config on still_life sequence from HQF dataset. (21/21 for this method and config)
+Finished evaluating methods CISTA, CISTA-D, CISTA-LSTC-d1, CISTA-LSTC-d3, CISTA-LSTC-d5, CISTA-LSTC-d7 and CISTA-LSTM on ECD and HQF datasets with low_k_events evaluation config
+
+Image Quality Scores (for low_k_events config)
+                 ECD                             HQF
+Method           MSE    PSNR    SSIM    LPIPS    MSE    PSNR    SSIM    LPIPS
+-------------  -----  ------  ------  -------  -----  ------  ------  -------
+CISTA          0.258   6.366   0.090    0.938  0.186   7.606   0.051    0.922
+CISTA-D
+CISTA-LSTC-d1  0.061  13.202   0.556    0.254  0.065  12.705   0.530    0.292
+CISTA-LSTC-d3  0.060  13.250   0.567    0.239  0.051  13.675   0.546    0.271
+CISTA-LSTC-d5  0.064  13.110   0.565    0.246  0.067  12.508   0.525    0.293
+CISTA-LSTC-d7  0.062  13.022   0.557    0.254  0.061  13.059   0.538    0.284
+CISTA-LSTM     0.068  12.669   0.552    0.250  0.064  12.932   0.536    0.293
+
+== Timing statistics ==
+CISTA: 4.18 ms (15639 samples)
+CISTA-LSTC-d1: 4.12 ms (15639 samples)
+CISTA-LSTC-d3: 4.93 ms (15639 samples)
+CISTA-LSTC-d5: 5.51 ms (15639 samples)
+CISTA-LSTC-d7: 6.23 ms (15639 samples)
+CISTA-LSTM: 5.88 ms (15639 samples)

@@ -1,5 +1,5 @@
 {
-    "root_path": "data/HQF",
+    "root_path": "/rds/general/user/sl220/home/data/EVREAL_data/HQF",
     "sequences": 
     {
         "bike_bay_hdr": {},

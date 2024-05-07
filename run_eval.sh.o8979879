@@ -1,0 +1,20 @@
+True
+Started evaluating method CISTA-ERAFT on ECD dataset with low_k_events evaluation config
+Starting method CISTA-ERAFT
+Evaluating CISTA-ERAFT method with low_k_events evaluation config on calibration sequence from ECD dataset. (1/7 for this method and config)
+Evaluating CISTA-ERAFT method with low_k_events evaluation config on boxes_6dof sequence from ECD dataset. (1/7 for this method and config)
+Evaluating CISTA-ERAFT method with low_k_events evaluation config on dynamic_6dof sequence from ECD dataset. (1/7 for this method and config)
+Evaluating CISTA-ERAFT method with low_k_events evaluation config on office_zigzag sequence from ECD dataset. (1/7 for this method and config)
+Evaluating CISTA-ERAFT method with low_k_events evaluation config on poster_6dof sequence from ECD dataset. (1/7 for this method and config)
+Evaluating CISTA-ERAFT method with low_k_events evaluation config on shapes_6dof sequence from ECD dataset. (1/7 for this method and config)
+Evaluating CISTA-ERAFT method with low_k_events evaluation config on slider_depth sequence from ECD dataset. (1/7 for this method and config)
+Finished evaluating method CISTA-ERAFT on ECD dataset with low_k_events evaluation config
+
+Image Quality Scores (for low_k_events config)
+                ECD
+Method         PSNR
+-----------  ------
+CISTA-ERAFT  14.393
+
+== Timing statistics ==
+CISTA-ERAFT: 59.78 ms (63 samples)

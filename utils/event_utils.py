@@ -54,3 +54,72 @@ def events_to_voxel_torch(xs, ys, ts, ps, num_bins, device=None, sensor_size=(18
         bins.append(vb)
     bins = torch.stack(bins)
     return bins
+
+
+def events_to_voxel_grid_pytorch(xs, ys, ts, ps, num_bins, width, height):#, divide_sign=True):
+    """
+    Build a voxel grid with bilinear interpolation in the time domain from a set of events.
+    :param events: a [N x 4] NumPy array containing one event per row in the form: [timestamp, x, y, polarity]
+    :param num_bins: number of bins in the temporal axis of the voxel grid
+    :divide_sign: True, neg/pos divide into two groups
+    :param width, height: dimensions of the voxel grid
+    :param device: device to use to perform computations
+    :return voxel_grid: PyTorch event tensor (on the device specified)
+    """
+
+
+    # assert(events.shape[1] == 4)
+    assert(num_bins > 0)
+    assert(width > 0)
+    assert(height > 0)
+
+    with torch.no_grad():
+    #events_torch = torch.from_numpy(events)
+    #events_torch = events_torch.to(device)
+        voxel_grid = torch.zeros(num_bins, height, width, dtype=torch.float32, device=xs.device).flatten()
+        
+        if len(ts) == 0:
+            return voxel_grid.view(num_bins, height, width)
+        # normalize the event timestamps so that they lie between 0 and num_bins
+
+        deltaT = ts[-1] - ts[0]
+
+        if deltaT == 0:
+            deltaT = 1.0
+        
+
+        # events[:, 0] = (num_bins - 1) * (events[:, 0] - first_stamp) / deltaT
+        ts = (num_bins - 1) * (ts - ts[0]) / deltaT
+        xs = xs.long()
+        ys = ys.long()
+        # ts = events[:, 0]
+        # xs = events[:, 1].long()
+        # ys = events[:, 2].long()
+        # pols = events[:, 3].float()
+        # pols[pols == 0] = -1  # polarity should be +1 / -1
+        ps[ps==0] == -1
+        tis = torch.floor(ts)
+        tis_long = tis.long()
+        dts = ts - tis
+        vals_left = ps * (1.0 - dts.float())
+        vals_right = ps * dts.float()
+
+        valid_indices = tis < num_bins
+        valid_indices &= tis >= 0
+        voxel_grid.index_add_(dim=0,
+                            index=xs[valid_indices] + ys[valid_indices]
+                            * width + tis_long[valid_indices] * width * height,
+                            source=vals_left[valid_indices])
+
+        valid_indices = (tis + 1) < num_bins
+        valid_indices &= tis >= 0
+
+        voxel_grid.index_add_(dim=0,
+                            index=xs[valid_indices] + ys[valid_indices] * width
+                            + (tis_long[valid_indices] + 1) * width * height,
+                            source=vals_right[valid_indices])
+
+
+    voxel_grid = voxel_grid.view(num_bins, height, width)
+
+    return voxel_grid

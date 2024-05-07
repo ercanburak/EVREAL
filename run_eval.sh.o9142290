@@ -1,0 +1,21 @@
+True
+Started evaluating method CISTA-TC on ECD_fast and MVSEC_night datasets with low_k_events evaluation config
+Starting method CISTA-TC
+Evaluating CISTA-TC method with low_k_events evaluation config on calibration sequence from ECD_fast dataset. (1/8 for this method and config)
+Evaluating CISTA-TC method with low_k_events evaluation config on boxes_6dof sequence from ECD_fast dataset. (2/8 for this method and config)
+Evaluating CISTA-TC method with low_k_events evaluation config on dynamic_6dof sequence from ECD_fast dataset. (3/8 for this method and config)
+Evaluating CISTA-TC method with low_k_events evaluation config on poster_6dof sequence from ECD_fast dataset. (4/8 for this method and config)
+Evaluating CISTA-TC method with low_k_events evaluation config on shapes_6dof sequence from ECD_fast dataset. (5/8 for this method and config)
+Evaluating CISTA-TC method with low_k_events evaluation config on outdoor_night1_data sequence from MVSEC_night dataset. (6/8 for this method and config)
+Evaluating CISTA-TC method with low_k_events evaluation config on outdoor_night2_data sequence from MVSEC_night dataset. (7/8 for this method and config)
+Evaluating CISTA-TC method with low_k_events evaluation config on outdoor_night3_data sequence from MVSEC_night dataset. (8/8 for this method and config)
+Finished evaluating method CISTA-TC on ECD_fast and MVSEC_night datasets with low_k_events evaluation config
+
+Image Quality Scores (for low_k_events config)
+            ECD_fast    MVSEC_night
+Method       BRISQUE        BRISQUE
+--------  ----------  -------------
+CISTA-TC      26.371         29.241
+
+== Timing statistics ==
+CISTA-TC: 8.15 ms (45127 samples)

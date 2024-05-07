@@ -1,0 +1,76 @@
+True
+Started evaluating methods E2VID+, myE2VID, FireNet+, myFireNet, SPADE-E2VID, mySPADE, ET-Net, HyperE2VID, CISTA-LSTC, CISTA-EIFlow and CISTA-ERAFT on MVSEC_night dataset with low_k_events evaluation config
+Starting method E2VID+
+Evaluating E2VID+ method with low_k_events evaluation config on outdoor_night1_data sequence from MVSEC_night dataset. (1/3 for this method and config)
+Evaluating E2VID+ method with low_k_events evaluation config on outdoor_night2_data sequence from MVSEC_night dataset. (2/3 for this method and config)
+Evaluating E2VID+ method with low_k_events evaluation config on outdoor_night3_data sequence from MVSEC_night dataset. (3/3 for this method and config)
+Starting method myE2VID
+Evaluating myE2VID method with low_k_events evaluation config on outdoor_night1_data sequence from MVSEC_night dataset. (1/3 for this method and config)
+Evaluating myE2VID method with low_k_events evaluation config on outdoor_night2_data sequence from MVSEC_night dataset. (2/3 for this method and config)
+Evaluating myE2VID method with low_k_events evaluation config on outdoor_night3_data sequence from MVSEC_night dataset. (3/3 for this method and config)
+Starting method FireNet+
+Evaluating FireNet+ method with low_k_events evaluation config on outdoor_night1_data sequence from MVSEC_night dataset. (1/3 for this method and config)
+Evaluating FireNet+ method with low_k_events evaluation config on outdoor_night2_data sequence from MVSEC_night dataset. (2/3 for this method and config)
+Evaluating FireNet+ method with low_k_events evaluation config on outdoor_night3_data sequence from MVSEC_night dataset. (3/3 for this method and config)
+Starting method myFireNet
+Evaluating myFireNet method with low_k_events evaluation config on outdoor_night1_data sequence from MVSEC_night dataset. (1/3 for this method and config)
+Evaluating myFireNet method with low_k_events evaluation config on outdoor_night2_data sequence from MVSEC_night dataset. (2/3 for this method and config)
+Evaluating myFireNet method with low_k_events evaluation config on outdoor_night3_data sequence from MVSEC_night dataset. (3/3 for this method and config)
+Starting method SPADE-E2VID
+Evaluating SPADE-E2VID method with low_k_events evaluation config on outdoor_night1_data sequence from MVSEC_night dataset. (1/3 for this method and config)
+Evaluating SPADE-E2VID method with low_k_events evaluation config on outdoor_night2_data sequence from MVSEC_night dataset. (2/3 for this method and config)
+Evaluating SPADE-E2VID method with low_k_events evaluation config on outdoor_night3_data sequence from MVSEC_night dataset. (3/3 for this method and config)
+Starting method mySPADE
+Evaluating mySPADE method with low_k_events evaluation config on outdoor_night1_data sequence from MVSEC_night dataset. (1/3 for this method and config)
+Evaluating mySPADE method with low_k_events evaluation config on outdoor_night2_data sequence from MVSEC_night dataset. (2/3 for this method and config)
+Evaluating mySPADE method with low_k_events evaluation config on outdoor_night3_data sequence from MVSEC_night dataset. (3/3 for this method and config)
+Starting method ET-Net
+Evaluating ET-Net method with low_k_events evaluation config on outdoor_night1_data sequence from MVSEC_night dataset. (1/3 for this method and config)
+Evaluating ET-Net method with low_k_events evaluation config on outdoor_night2_data sequence from MVSEC_night dataset. (2/3 for this method and config)
+Evaluating ET-Net method with low_k_events evaluation config on outdoor_night3_data sequence from MVSEC_night dataset. (3/3 for this method and config)
+Starting method HyperE2VID
+Evaluating HyperE2VID method with low_k_events evaluation config on outdoor_night1_data sequence from MVSEC_night dataset. (1/3 for this method and config)
+Evaluating HyperE2VID method with low_k_events evaluation config on outdoor_night2_data sequence from MVSEC_night dataset. (2/3 for this method and config)
+Evaluating HyperE2VID method with low_k_events evaluation config on outdoor_night3_data sequence from MVSEC_night dataset. (3/3 for this method and config)
+Starting method CISTA-LSTC
+Evaluating CISTA-LSTC method with low_k_events evaluation config on outdoor_night1_data sequence from MVSEC_night dataset. (1/3 for this method and config)
+Evaluating CISTA-LSTC method with low_k_events evaluation config on outdoor_night2_data sequence from MVSEC_night dataset. (2/3 for this method and config)
+Evaluating CISTA-LSTC method with low_k_events evaluation config on outdoor_night3_data sequence from MVSEC_night dataset. (3/3 for this method and config)
+Starting method CISTA-EIFlow
+Evaluating CISTA-EIFlow method with low_k_events evaluation config on outdoor_night1_data sequence from MVSEC_night dataset. (1/3 for this method and config)
+Evaluating CISTA-EIFlow method with low_k_events evaluation config on outdoor_night2_data sequence from MVSEC_night dataset. (2/3 for this method and config)
+Evaluating CISTA-EIFlow method with low_k_events evaluation config on outdoor_night3_data sequence from MVSEC_night dataset. (3/3 for this method and config)
+Starting method CISTA-ERAFT
+Evaluating CISTA-ERAFT method with low_k_events evaluation config on outdoor_night1_data sequence from MVSEC_night dataset. (1/3 for this method and config)
+Evaluating CISTA-ERAFT method with low_k_events evaluation config on outdoor_night2_data sequence from MVSEC_night dataset. (2/3 for this method and config)
+Evaluating CISTA-ERAFT method with low_k_events evaluation config on outdoor_night3_data sequence from MVSEC_night dataset. (3/3 for this method and config)
+Finished evaluating methods E2VID+, myE2VID, FireNet+, myFireNet, SPADE-E2VID, mySPADE, ET-Net, HyperE2VID, CISTA-LSTC, CISTA-EIFlow and CISTA-ERAFT on MVSEC_night dataset with low_k_events evaluation config
+
+Image Quality Scores (for low_k_events config)
+                MVSEC_night
+Method              BRISQUE    NIQE
+------------  -------------  ------
+E2VID+               11.792   4.500
+myE2VID              26.662   3.805
+FireNet+             10.379   4.345
+myFireNet            36.051   8.476
+SPADE-E2VID          23.782   7.109
+mySPADE              28.736   7.702
+ET-Net               15.974   5.111
+HyperE2VID            7.477   5.103
+CISTA-LSTC           28.978   6.670
+CISTA-EIFlow         30.644   7.486
+CISTA-ERAFT          33.771   7.939
+
+== Timing statistics ==
+E2VID+: 10.48 ms (22752 samples)
+myE2VID: 10.13 ms (22752 samples)
+FireNet+: 2.07 ms (22752 samples)
+myFireNet: 2.21 ms (22752 samples)
+SPADE-E2VID: 25.04 ms (22752 samples)
+mySPADE: 24.99 ms (22752 samples)
+ET-Net: 38.08 ms (22752 samples)
+HyperE2VID: 12.75 ms (22752 samples)
+CISTA-LSTC: 10.30 ms (22752 samples)
+CISTA-EIFlow: 32.97 ms (22752 samples)
+CISTA-ERAFT: 49.38 ms (22752 samples)

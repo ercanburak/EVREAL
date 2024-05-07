@@ -1,0 +1,6 @@
+{
+	"model_name": "myE2VID-120",
+	"model_path": "pretrained/myE2VID/e2vid_120.pth.tar",
+	"event_tensor_normalization": true,
+	"post_process_norm": "none"
+}

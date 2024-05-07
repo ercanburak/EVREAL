@@ -1,5 +1,5 @@
 {
-    "root_path": "data/ECD",
+    "root_path": "/rds/general/user/sl220/home/data/EVREAL_data/ECD",
     "sequences": 
     {
         "calibration":

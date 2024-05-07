@@ -1,0 +1,197 @@
+True
+Started evaluating methods myE2VID120, myFireNet120, mySPADE120, CISTA-LSTC120, CISTA-EIFlow120 and CISTA-ERAFT120 on ECD and HQF datasets with low_k_events evaluation config
+Starting method myE2VID120
+Evaluating myE2VID120 method with low_k_events evaluation config on calibration sequence from ECD dataset. (1/21 for this method and config)
+Loading pretrained model LPIPS from /rds/general/user/sl220/home/.cache/torch/hub/checkpoints/LPIPS_v0.1_alex-df73285e.pth
+Evaluating myE2VID120 method with low_k_events evaluation config on boxes_6dof sequence from ECD dataset. (2/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on dynamic_6dof sequence from ECD dataset. (3/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on office_zigzag sequence from ECD dataset. (4/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on poster_6dof sequence from ECD dataset. (5/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on shapes_6dof sequence from ECD dataset. (6/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on slider_depth sequence from ECD dataset. (7/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on bike_bay_hdr sequence from HQF dataset. (8/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on boxes sequence from HQF dataset. (9/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on desk sequence from HQF dataset. (10/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on desk_fast sequence from HQF dataset. (11/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on desk_hand_only sequence from HQF dataset. (12/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on desk_slow sequence from HQF dataset. (13/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on engineering_posters sequence from HQF dataset. (14/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on high_texture_plants sequence from HQF dataset. (15/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on poster_pillar_1 sequence from HQF dataset. (16/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on poster_pillar_2 sequence from HQF dataset. (17/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on reflective_materials sequence from HQF dataset. (18/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on slow_and_fast_desk sequence from HQF dataset. (19/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on slow_hand sequence from HQF dataset. (20/21 for this method and config)
+Evaluating myE2VID120 method with low_k_events evaluation config on still_life sequence from HQF dataset. (21/21 for this method and config)
+Starting method myFireNet120
+Evaluating myFireNet120 method with low_k_events evaluation config on calibration sequence from ECD dataset. (1/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on boxes_6dof sequence from ECD dataset. (2/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on dynamic_6dof sequence from ECD dataset. (3/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on office_zigzag sequence from ECD dataset. (4/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on poster_6dof sequence from ECD dataset. (5/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on shapes_6dof sequence from ECD dataset. (6/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on slider_depth sequence from ECD dataset. (7/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on bike_bay_hdr sequence from HQF dataset. (8/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on boxes sequence from HQF dataset. (9/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on desk sequence from HQF dataset. (10/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on desk_fast sequence from HQF dataset. (11/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on desk_hand_only sequence from HQF dataset. (12/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on desk_slow sequence from HQF dataset. (13/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on engineering_posters sequence from HQF dataset. (14/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on high_texture_plants sequence from HQF dataset. (15/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on poster_pillar_1 sequence from HQF dataset. (16/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on poster_pillar_2 sequence from HQF dataset. (17/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on reflective_materials sequence from HQF dataset. (18/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on slow_and_fast_desk sequence from HQF dataset. (19/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on slow_hand sequence from HQF dataset. (20/21 for this method and config)
+Evaluating myFireNet120 method with low_k_events evaluation config on still_life sequence from HQF dataset. (21/21 for this method and config)
+Starting method mySPADE120
+Evaluating mySPADE120 method with low_k_events evaluation config on calibration sequence from ECD dataset. (1/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on boxes_6dof sequence from ECD dataset. (2/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on dynamic_6dof sequence from ECD dataset. (3/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on office_zigzag sequence from ECD dataset. (4/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on poster_6dof sequence from ECD dataset. (5/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on shapes_6dof sequence from ECD dataset. (6/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on slider_depth sequence from ECD dataset. (7/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on bike_bay_hdr sequence from HQF dataset. (8/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on boxes sequence from HQF dataset. (9/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on desk sequence from HQF dataset. (10/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on desk_fast sequence from HQF dataset. (11/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on desk_hand_only sequence from HQF dataset. (12/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on desk_slow sequence from HQF dataset. (13/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on engineering_posters sequence from HQF dataset. (14/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on high_texture_plants sequence from HQF dataset. (15/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on poster_pillar_1 sequence from HQF dataset. (16/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on poster_pillar_2 sequence from HQF dataset. (17/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on reflective_materials sequence from HQF dataset. (18/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on slow_and_fast_desk sequence from HQF dataset. (19/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on slow_hand sequence from HQF dataset. (20/21 for this method and config)
+Evaluating mySPADE120 method with low_k_events evaluation config on still_life sequence from HQF dataset. (21/21 for this method and config)
+Starting method CISTA-LSTC120
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on calibration sequence from ECD dataset. (1/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on boxes_6dof sequence from ECD dataset. (2/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on dynamic_6dof sequence from ECD dataset. (3/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on office_zigzag sequence from ECD dataset. (4/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on poster_6dof sequence from ECD dataset. (5/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on shapes_6dof sequence from ECD dataset. (6/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on slider_depth sequence from ECD dataset. (7/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on bike_bay_hdr sequence from HQF dataset. (8/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on boxes sequence from HQF dataset. (9/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on desk sequence from HQF dataset. (10/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on desk_fast sequence from HQF dataset. (11/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on desk_hand_only sequence from HQF dataset. (12/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on desk_slow sequence from HQF dataset. (13/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on engineering_posters sequence from HQF dataset. (14/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on high_texture_plants sequence from HQF dataset. (15/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on poster_pillar_1 sequence from HQF dataset. (16/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on poster_pillar_2 sequence from HQF dataset. (17/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on reflective_materials sequence from HQF dataset. (18/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on slow_and_fast_desk sequence from HQF dataset. (19/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on slow_hand sequence from HQF dataset. (20/21 for this method and config)
+Evaluating CISTA-LSTC120 method with low_k_events evaluation config on still_life sequence from HQF dataset. (21/21 for this method and config)
+Starting method CISTA-EIFlow120
+Evaluating CISTA-EIFlow120 method with low_k_events evaluation config on calibration sequence from ECD dataset. (1/21 for this method and config)
+Exception while evaluating method CISTA-EIFlow120 on ECD dataset:
+too many indices for tensor of dimension 4
+Traceback (most recent call last):
+  File "/rds/general/user/sl220/home/projects/EVREAL/eval.py", line 419, in eval_method_with_config
+    results = eval_method_on_sequence(dataset['name'], eval_config, method_name, model, method_config, sequence, metrics, model_name) #------
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/projects/EVREAL/eval.py", line 285, in eval_method_on_sequence
+    output = model(voxel)
+             ^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/anaconda3/envs/py311/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/anaconda3/envs/py311/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/projects/EVREAL/CISTAFlow/e2v/e2v_model.py", line 166, in forward
+    self.cista_net.prev_rec = torch.zeros(batch_data['event_voxel'].shape[0], 1, batch_data['event_voxel'].shape[2], batch_data['event_voxel'].shape[3],
+                                          ~~~~~~~~~~^^^^^^^^^^^^^^^
+IndexError: too many indices for tensor of dimension 4
+
+Evaluating CISTA-EIFlow120 method with low_k_events evaluation config on bike_bay_hdr sequence from HQF dataset. (1/21 for this method and config)
+Exception while evaluating method CISTA-EIFlow120 on HQF dataset:
+too many indices for tensor of dimension 4
+Traceback (most recent call last):
+  File "/rds/general/user/sl220/home/projects/EVREAL/eval.py", line 419, in eval_method_with_config
+    results = eval_method_on_sequence(dataset['name'], eval_config, method_name, model, method_config, sequence, metrics, model_name) #------
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/projects/EVREAL/eval.py", line 285, in eval_method_on_sequence
+    output = model(voxel)
+             ^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/anaconda3/envs/py311/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/anaconda3/envs/py311/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/projects/EVREAL/CISTAFlow/e2v/e2v_model.py", line 166, in forward
+    self.cista_net.prev_rec = torch.zeros(batch_data['event_voxel'].shape[0], 1, batch_data['event_voxel'].shape[2], batch_data['event_voxel'].shape[3],
+                                          ~~~~~~~~~~^^^^^^^^^^^^^^^
+IndexError: too many indices for tensor of dimension 4
+
+Starting method CISTA-ERAFT120
+Evaluating CISTA-ERAFT120 method with low_k_events evaluation config on calibration sequence from ECD dataset. (1/21 for this method and config)
+Exception while evaluating method CISTA-ERAFT120 on ECD dataset:
+too many indices for tensor of dimension 4
+Traceback (most recent call last):
+  File "/rds/general/user/sl220/home/projects/EVREAL/eval.py", line 419, in eval_method_with_config
+    results = eval_method_on_sequence(dataset['name'], eval_config, method_name, model, method_config, sequence, metrics, model_name) #------
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/projects/EVREAL/eval.py", line 285, in eval_method_on_sequence
+    output = model(voxel)
+             ^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/anaconda3/envs/py311/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/anaconda3/envs/py311/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/projects/EVREAL/CISTAFlow/e2v/e2v_model.py", line 210, in forward
+    self.cista_net.prev_rec = torch.zeros(batch_data['event_voxel'].shape[0], 1, batch_data['event_voxel'].shape[2], batch_data['event_voxel'].shape[3],
+                                          ~~~~~~~~~~^^^^^^^^^^^^^^^
+IndexError: too many indices for tensor of dimension 4
+
+Evaluating CISTA-ERAFT120 method with low_k_events evaluation config on bike_bay_hdr sequence from HQF dataset. (1/21 for this method and config)
+Exception while evaluating method CISTA-ERAFT120 on HQF dataset:
+too many indices for tensor of dimension 4
+Traceback (most recent call last):
+  File "/rds/general/user/sl220/home/projects/EVREAL/eval.py", line 419, in eval_method_with_config
+    results = eval_method_on_sequence(dataset['name'], eval_config, method_name, model, method_config, sequence, metrics, model_name) #------
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/projects/EVREAL/eval.py", line 285, in eval_method_on_sequence
+    output = model(voxel)
+             ^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/anaconda3/envs/py311/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/anaconda3/envs/py311/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/rds/general/user/sl220/home/projects/EVREAL/CISTAFlow/e2v/e2v_model.py", line 210, in forward
+    self.cista_net.prev_rec = torch.zeros(batch_data['event_voxel'].shape[0], 1, batch_data['event_voxel'].shape[2], batch_data['event_voxel'].shape[3],
+                                          ~~~~~~~~~~^^^^^^^^^^^^^^^
+IndexError: too many indices for tensor of dimension 4
+
+Finished evaluating methods myE2VID120, myFireNet120, mySPADE120, CISTA-LSTC120, CISTA-EIFlow120 and CISTA-ERAFT120 on ECD and HQF datasets with low_k_events evaluation config
+
+Image Quality Scores (for low_k_events config)
+                   ECD                                                HQF
+Method             MSE    PSNR    SSIM    LPIPS    BRISQUE    NIQE    MSE    PSNR    SSIM    LPIPS    BRISQUE    NIQE
+---------------  -----  ------  ------  -------  ---------  ------  -----  ------  ------  -------  ---------  ------
+myE2VID120       0.085  11.763   0.460    0.295     19.767   6.384  0.087  11.515   0.384    0.378     23.059   8.594
+myFireNet120     0.056  13.167   0.522    0.266     29.707   7.449  0.038  14.681   0.517    0.310     31.934   7.610
+mySPADE120       0.150   8.871   0.496    0.307     22.097   8.031  0.135   9.269   0.466    0.333     20.685   8.157
+CISTA-LSTC120    0.047  14.116   0.574    0.240     27.836   9.085  0.037  14.886   0.578    0.265     30.661   9.210
+CISTA-EIFlow120
+CISTA-ERAFT120
+
+== Timing statistics ==
+myE2VID120: 4.85 ms (15639 samples)
+myFireNet120: 1.49 ms (15639 samples)
+mySPADE120: 12.57 ms (15639 samples)
+CISTA-LSTC120: 5.34 ms (15639 samples)
+CISTA-EIFlow120: 55.96 ms (2 samples)
+CISTA-ERAFT120: 0.88 ms (2 samples)

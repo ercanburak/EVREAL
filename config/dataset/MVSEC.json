@@ -1,5 +1,5 @@
 {
-    "root_path": "data/MVSEC",
+    "root_path": "/rds/general/user/sl220/home/data/EVREAL_data/MVSEC",
     "sequences": 
     {
         "indoor_flying1_data":
@@ -29,8 +29,8 @@
         },
         "outdoor_day2_data":
         {
-            "start_time_s": 100.0,
-            "end_time_s": 160.0
+        "start_time_s": 100.0,
+        "end_time_s": 160.0
         }
     }
 }

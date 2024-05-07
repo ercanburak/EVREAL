@@ -1,0 +1,6 @@
+{
+	"model_name": "CISTA-LSTC-120",
+	"model_path": "pretrained/CISTA-LSTC/cista-lstc-120.pth.tar",
+	"event_tensor_normalization": true,
+	"post_process_norm": "none"
+}

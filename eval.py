@@ -12,11 +12,14 @@ from tqdm import tqdm
 from yachalk import chalk
 
 import model as model_arch
-from dataset import MemMapDataset
+from dataset import MemMapDataset, MySIMDataset
 from utils.eval_metrics import EvalMetricsTracker
 from utils.eval_utils import torch2cv2, normalize
 from utils.timers import CudaTimer
 from utils.util import CropParameters, read_json, get_height_width
+
+from CISTAFlow.e2v.e2v_model import CistaTCNet, CistaLSTCNet, DCEIFlowCistaNet, ERAFTCistaNet
+
 
 color_progress = chalk.cyan.bold
 color_error = chalk.red.bold
@@ -67,7 +70,10 @@ def get_sequences(dataset_config, dataset_kwargs):
     for sequence_name, sequence in tqdm(sequences_config.items()):
         sequence_path = sequence.get('sequence_path', os.path.join(dataset_root, sequence_name))
         sequence['name'] = sequence_name
-        dataset = MemMapDataset(sequence_path, **dataset_kwargs)
+        if dataset_config['name'] != 'SIM':
+            dataset = MemMapDataset(sequence_path, **dataset_kwargs)
+        else:
+            dataset = MySIMDataset(sequence_path, **dataset_kwargs) #------
         sequence['data_loader'] = DataLoader(dataset, pin_memory=True)
         min_t, max_t = dataset.get_min_max_t()
         if 'start_time_s' not in sequence:
@@ -120,16 +126,65 @@ def get_method_config(method_name):
     return method_config
 
 
-def get_model_from_checkpoint_path(model_name, checkpoint_path):
+def get_model_from_checkpoint_path(model_name, checkpoint_path, model_mode=None):
     """
     Instantiate a PyTorch model class from a given model name and checkpoint path. According to the model name,
     each checkpoint is parsed and each model class is instantiated with the correct parameters.
     """
     checkpoint = torch.load(checkpoint_path, device)
-    if model_name == "SPADE-E2VID":
+    
+    if "CISTA-TC" in model_name:
+        model = CistaTCNet()
+        model.num_encoders = 3 # for cropper
+        state_dict = checkpoint['state_dict']
+    elif "CISTA" in model_name and model_name not in ["CISTA-EIFlow", "CISTA-ERAFT"]: #"CISTA-LSTC", CISTA-D, CISTA,CISTA-LSTM, CISTA-LSTC-Z0/recI, CISTA-LSTC-d1/3/5/7
+        last_name = model_name.split('-')[-1]
+        depth = int(last_name[-1]) if ('d' in last_name and last_name != 'old') else 5
+        model = CistaLSTCNet(depth=depth, model_mode=model_mode)
+        model.num_encoders = 3 # for cropper
+        state_dict = checkpoint['state_dict']
+    
+    elif "CISTA-EIFlow" in model_name:
+        # kwargs = { "num_bins": 5}
+        model = DCEIFlowCistaNet()
+        model.num_encoders = 3 # for cropper
+        state_dict = checkpoint['state_dict']
+    elif "CISTA-ERAFT" in model_name:
+        # kwargs = {"num_bins": 5}
+        model = ERAFTCistaNet()
+        model.num_encoders = 3 # for cropper
+        state_dict = checkpoint['state_dict']
+    elif model_name in ["SPADE-E2VID"]:
         model = model_arch.SpadeE2vid()
         model.num_encoders = 3
         state_dict = checkpoint
+    elif "mySPADE" in model_name:
+        model = model_arch.SpadeE2vid()
+        model.num_encoders = 3
+        state_dict = checkpoint['state_dict']
+    elif "myE2VID" in model_name:
+        unet_kwargs = {'num_bins': 5,
+                'skip_type': 'sum',
+                'recurrent_block_type': 'convlstm',
+                'num_encoders': 3,
+                'base_num_channels': 32,
+                'num_residual_blocks': 2,
+                'use_upsample_conv': False,
+                'norm': 'BN',
+                'final_activation': 'sigmoid'}
+        model = model_arch.E2VIDRecurrent(unet_kwargs)
+        state_dict = checkpoint['state_dict']
+    elif "myFireNet" in model_name:
+        unet_kwargs = {'num_bins': 5,
+                'skip_type': 'sum',
+                'recurrent_block_type': 'convgru',
+                'base_num_channels': 16,
+                'num_residual_blocks': 2,
+                'kernel_size':3,
+                'norm': None,
+                'final_activation': ''}
+        model = model_arch.FireNet_legacy(unet_kwargs)
+        state_dict = checkpoint['state_dict']
     elif model_name == "SSL-E2VID":
         unet_kwargs = {"base_num_channels": 32, "kernel_size": 5, "num_bins": 5, "num_encoders": 3,
                        "recurrent_block_type": "convlstm", "num_residual_blocks": 2, "skip_type": "sum", "norm": None,
@@ -159,7 +214,10 @@ def get_model_from_checkpoint_path(model_name, checkpoint_path):
 
 def get_cropper(model, data_loader):
     height, width = get_height_width(data_loader)
+    # if hasattr(model, "num_encoders"):
     cropper = CropParameters(width, height, model.num_encoders)
+    # else:
+    #     cropper = CropParameters(width, height, 3)
     return cropper
 
 
@@ -168,11 +226,16 @@ def get_eval_metrics_tracker(dataset_name, eval_config, method_name, sequence, m
 
     save_images = eval_config.get('save_images', True)
     save_processed_images = save_images and eval_config['histeq'] != 'none'
+    
+    save_events = eval_config.get('save_events', False)
+    save_interval = eval_config.get('save_interval', 1)
 
     has_reference_frames = sequence["data_loader"].dataset.has_images
 
     eval_metrics_tracker = EvalMetricsTracker(save_images=save_images,
                                               save_processed_images=save_processed_images,
+                                              save_events=save_events,
+                                              save_interval=save_interval,
                                               output_dir=output_path,
                                               hist_eq=eval_config['histeq'],
                                               quan_eval_metric_names=metrics,
@@ -183,7 +246,7 @@ def get_eval_metrics_tracker(dataset_name, eval_config, method_name, sequence, m
     return eval_metrics_tracker
 
 
-def eval_method_on_sequence(dataset_name, eval_config, method_name, model, method_config, sequence, metrics):
+def eval_method_on_sequence(dataset_name, eval_config, method_name, model, method_config, sequence, metrics, model_name):
     """
     Evaluates a method on a single sequence from a dataset, using the given evaluation configuration and metrics.
     """
@@ -196,6 +259,7 @@ def eval_method_on_sequence(dataset_name, eval_config, method_name, model, metho
     post_process_norm = method_config.get('post_process_norm', "none")
     event_tensor_normalization = method_config.get('event_tensor_normalization', False)
     idx = 0
+    old_voxel = None
     for idx, item in enumerate(tqdm(data_loader)):
         if has_reference_frames:
             ref_frame = item['frame']
@@ -219,14 +283,38 @@ def eval_method_on_sequence(dataset_name, eval_config, method_name, model, metho
             voxel = normalize_event_tensor(voxel)
         voxel = voxel.to(device)
         voxel = cropper.pad(voxel)
-        with CudaTimer(method_name):
-            output = model(voxel)
+        if 'CISTA-EIFlow' in model_name:
+            batch_data = {'event_voxel':voxel}
+            with CudaTimer(method_name):
+                output = model(batch_data)
+        elif 'CISTA-ERAFT' in model_name:
+            if idx ==0 or old_voxel is None:
+                old_voxel = torch.zeros_like(voxel)
+            # print(idx)
+            # print(old_voxel.shape)
+            batch_data = {'event_voxel':voxel, 'event_voxel_old':old_voxel}
+            with CudaTimer(method_name):
+                output = model(batch_data)
+            old_voxel = voxel.detach()
+        else:
+            with CudaTimer(method_name):
+                output = model(voxel)
+
         image = cropper.crop(output['image'])
         image = torch2cv2(image)
         image = post_process_normalization(image, post_process_norm)
+        #---------------------
+        if 'flow' in output.keys():
+            flow = output['flow']
+            # flow = torch2cv2(flow) #------
+        else:
+            flow = None
         if has_reference_frames:
             ref_frame = torch2cv2(ref_frame)
-        eval_metrics_tracker.update(idx, image, ref_frame, pred_frame_ts, ref_frame_ts)
+            #---------------------
+            if dataset_name in ['ECD', 'MVSEC']:
+                ref_frame = post_process_normalization(ref_frame, 'standard')
+        eval_metrics_tracker.update(idx, image, ref_frame, pred_frame_ts, ref_frame_ts, flow, voxel) #-----flow, voxel
         eval_metrics_tracker.save_custom_metric(idx, "event_rate", event_rate)
     eval_metrics_tracker.finalize(idx)
     num_evaluated = eval_metrics_tracker.get_num_quan_evaluations()
@@ -323,9 +411,10 @@ def eval_method_with_config(eval_config, method_name, datasets, metrics):
     print(color_progress("Starting method " + method_name))
     checkpoint_path = method_config['model_path']
     model_name = method_config['model_name']
+    model_mode = method_config['model_mode'] if 'model_mode' in method_config.keys() else None #------
     method_metrics = []
     try:
-        model = get_model_from_checkpoint_path(model_name, checkpoint_path)
+        model = get_model_from_checkpoint_path(model_name, checkpoint_path, model_mode) #-----
     except Exception as e:
         print(color_error(f"Exception while getting method {method_name} from checkpoint path {checkpoint_path}"))
         print(color_error(e))
@@ -342,7 +431,11 @@ def eval_method_with_config(eval_config, method_name, datasets, metrics):
                 print(color_progress(f"Evaluating {method_name} method with {eval_config['name']} evaluation config"
                                      f" on {sequence['name']} sequence from {dataset['name']} dataset. "
                                      f"({sequence_no}/{num_sequences} for this method and config)"))
-                results = eval_method_on_sequence(dataset['name'], eval_config, method_name, model, method_config, sequence, metrics)
+                #-------------
+                # if sequence['name'] == 'slider_depth':
+                results = eval_method_on_sequence(dataset['name'], eval_config, method_name, model, method_config, sequence, metrics, model_name) #------
+                # else:
+                #     continue
                 num_evaluated, mean_scores = results
                 sequence_no += 1
                 for metric_name, score in mean_scores.items():
@@ -371,6 +464,9 @@ def post_process_normalization(img, norm):
     elif norm == 'exprobust':
         img = np.exp(img)
         img = normalize(img, 1, 99)
+    elif norm == 'mean_bright': #------- not good
+        bright_reduction = img.mean() - 0.5
+        img = np.clip(img - bright_reduction, 0, 1)
     else:
         raise ValueError(f"Unrecognized normalization argument: {norm}")
     return img
@@ -432,5 +528,9 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--dataset', nargs='+', type=str, help='datasets')
     parser.add_argument('-qm', '--metrics', nargs='+', type=str,
                         help='quantitative evaluation metrics that will be used calculate scores')
+
+    # parser.add_argument('--image_dim', nargs=2, type=int,
+    #                     help='image dim HxW')
+    
     args = parser.parse_args()
     evaluate(args.method, args.config, args.dataset, args.metrics)

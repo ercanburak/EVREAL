@@ -1,0 +1,28 @@
+True
+Started evaluating methods CISTA, CISTA-D and CISTA-TC on MVSEC_night dataset with low_k_events evaluation config
+Starting method CISTA
+Evaluating CISTA method with low_k_events evaluation config on outdoor_night1_data sequence from MVSEC_night dataset. (1/3 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on outdoor_night2_data sequence from MVSEC_night dataset. (2/3 for this method and config)
+Evaluating CISTA method with low_k_events evaluation config on outdoor_night3_data sequence from MVSEC_night dataset. (3/3 for this method and config)
+Starting method CISTA-D
+Evaluating CISTA-D method with low_k_events evaluation config on outdoor_night1_data sequence from MVSEC_night dataset. (1/3 for this method and config)
+Evaluating CISTA-D method with low_k_events evaluation config on outdoor_night2_data sequence from MVSEC_night dataset. (2/3 for this method and config)
+Evaluating CISTA-D method with low_k_events evaluation config on outdoor_night3_data sequence from MVSEC_night dataset. (3/3 for this method and config)
+Starting method CISTA-TC
+Evaluating CISTA-TC method with low_k_events evaluation config on outdoor_night1_data sequence from MVSEC_night dataset. (1/3 for this method and config)
+Evaluating CISTA-TC method with low_k_events evaluation config on outdoor_night2_data sequence from MVSEC_night dataset. (2/3 for this method and config)
+Evaluating CISTA-TC method with low_k_events evaluation config on outdoor_night3_data sequence from MVSEC_night dataset. (3/3 for this method and config)
+Finished evaluating methods CISTA, CISTA-D and CISTA-TC on MVSEC_night dataset with low_k_events evaluation config
+
+Image Quality Scores (for low_k_events config)
+            MVSEC_night
+Method              MSE
+--------  -------------
+CISTA             0.171
+CISTA-D           0.124
+CISTA-TC          0.096
+
+== Timing statistics ==
+CISTA: 6.77 ms (22752 samples)
+CISTA-D: 7.83 ms (22752 samples)
+CISTA-TC: 10.36 ms (22752 samples)

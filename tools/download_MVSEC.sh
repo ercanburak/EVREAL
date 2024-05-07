@@ -1,4 +1,4 @@
-cd data
+cd /rds/general/user/sl220/home/data/EVREAL_data
 mkdir MVSEC
 cd MVSEC
 wget http://visiondata.cis.upenn.edu/mvsec/indoor_flying/indoor_flying1_data.bag

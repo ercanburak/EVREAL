@@ -1,0 +1,7 @@
+{
+	"model_name": "CISTA-TC",
+	"model_mode": "cista-tc",
+	"model_path": "pretrained/CISTA-TC/cista-tc.pth.tar",
+	"event_tensor_normalization": true,
+	"post_process_norm": "none"
+}
