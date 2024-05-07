@@ -15,6 +15,10 @@ For more details please see our [paper](https://arxiv.org/abs/2305.00434).
 For qualitative and quantitative experimental analyses please see our [project website](https://ercanburak.github.io/evreal.html), or [interactive demo](https://ercanburak-evreal.hf.space/).
 
 ## News
+- Second version of our EVREAL paper, which includes updated results, is [published at arXiv](https://arxiv.org/abs/2305.00434) now. 
+- Codes for robustness analysis are added. Please see the [example commands](#example-commands) below.
+- Codes for downstream tasks are added. Please refer to the [README file for downstream tasks](downstream_tasks/README.md) for instructions on performing object detection, image classification, and camera calibration experiments. 
+- Codes for color reconstruction added.
 - Evaluation codes are published now. Please see below for [installation](#installation), [dataset preparation](#preparing-datasets) and [usage](#usage) instructions. (Codes for robustness analysis and downstream tasks will be published soon.)
 - In our [result analysis tool](https://ercanburak-evreal.hf.space/), we also share results of **a new state-of-the-art model, HyperE2VID,** which generates higher-quality videos than previous state-of-the-art, while also reducing memory consumption and inference time. Please see the [HyperE2VID webpage](https://ercanburak.github.io/HyperE2VID.html) for more details.
 - The web application of our result analysis tool is ready now. [Try it here](https://ercanburak-evreal.hf.space/) to interactively visualize and compare qualitative and quantitative results of event-based video reconstruction methods.
@@ -24,9 +28,9 @@ For qualitative and quantitative experimental analyses please see our [project w
 
 Installing the packages required for evaluation, in a conda environment named `evreal`:
 ```
-conda create -y -n evreal python=3.8
+conda create -y -n evreal python=3.10
 conda activate evreal
-conda install pytorch torchvision pytorch-cuda=11.7 -c pytorch -c nvidia
+conda install pytorch torchvision pytorch-cuda=12.1 -c pytorch -c nvidia
 pip install -r requirements.txt
 ```
 
@@ -100,6 +104,19 @@ python eval.py -m E2VID FireNet E2VID+ FireNet+ SPADE-E2VID SSL-E2VID ET-Net Hyp
 To generate no-reference metric scores for each method on HDR datasets (as in Table 3 of the paper, with the addition of the new method HyperE2VID):
 ```bash
 python eval.py -m E2VID FireNet E2VID+ FireNet+ SPADE-E2VID SSL-E2VID ET-Net HyperE2VID -c t40ms -d TPAMI20_HDR -qm brisque niqe maniqa
+```
+
+To perform robustness experiments:
+```bash
+python eval.py -m E2VID FireNet E2VID+ FireNet+ SPADE-E2VID SSL-E2VID ET-Net HyperE2VID -c k5k k10k k15k k20k k25k k30k k35k k40k k45k -d ECD MVSEC HQF -qm mse ssim lpips
+python eval.py -m E2VID FireNet E2VID+ FireNet+ SPADE-E2VID SSL-E2VID ET-Net HyperE2VID -c t10ms t20ms t30ms t40ms t50ms t60ms t70ms t80ms t90ms t100ms -d ECD MVSEC HQF -qm mse ssim lpips
+python eval.py -m E2VID FireNet E2VID+ FireNet+ SPADE-E2VID SSL-E2VID ET-Net HyperE2VID -c kr0.1 kr0.2 kr0.3 kr0.4 kr0.5 kr0.6 kr0.7 kr0.8 kr0.9 kr1.0 -d ECD MVSEC HQF -qm mse ssim lpips
+python analyze_robustness.py
+```
+
+To generate color reconstructions on CED dataset:
+```bash
+python eval.py -m HyperE2VID -c color -d CED 
 ```
 
 ## Citations

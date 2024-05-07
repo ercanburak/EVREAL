@@ -45,7 +45,10 @@ def events_to_voxel_torch(xs, ys, ts, ps, num_bins, device=None, sensor_size=(18
     assert (len(xs) == len(ys) and len(ys) == len(ts) and len(ts) == len(ps))
     bins = []
     dt = ts[-1] - ts[0]
-    t_norm = (ts - ts[0]) / dt * (num_bins - 1)
+    if dt.item() < 1e-9:
+        t_norm = torch.linspace(0, num_bins - 1, steps=len(ts))
+    else:
+        t_norm = (ts - ts[0]) / dt * (num_bins - 1)
     zeros = torch.zeros(t_norm.size())
     for bi in range(num_bins):
         bilinear_weights = torch.max(zeros, 1.0 - torch.abs(t_norm - bi))

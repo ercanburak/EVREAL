@@ -1,0 +1,14 @@
+{
+    "dataset_kwargs": {
+        "num_bins": 5,
+        "voxel_method": {
+            "method": "between_frames"
+        },
+        "keep_ratio": 1.0
+    },
+    "save_images": true,
+    "histeq": "none",
+    "eval_infer_all": true,
+    "ts_tol_ms": 1.0,
+    "create_video": false
+}

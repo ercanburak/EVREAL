@@ -38,9 +38,16 @@ def bag_to_npy(bag_path, output_pth, event_topic, image_topic):
             timestamp = timestamp_float(msg.header.stamp)
             image_ts_list.append(timestamp)
             image = CvBridge().imgmsg_to_cv2(msg, "mono8")
-            image_list.append(image)
             if sensor_size is None:
                 sensor_size = image.shape[:2]
+            elif sensor_size != image.shape[:2]:
+                print("Warning: sensor size mismatch. Expected {}, got {}".format(sensor_size, image.shape[:2]))
+                # pad image to same size
+                padded_image = np.zeros(sensor_size, dtype=np.uint8)
+                padded_image[:image.shape[0], :image.shape[1]] = image
+                image = padded_image
+            image_list.append(image)
+
     bag.close()
 
     events_ts = np.array(ts)
@@ -49,9 +56,16 @@ def bag_to_npy(bag_path, output_pth, event_topic, image_topic):
     # assert np.all(events_ts[:-1] <= events_ts[1:])
 
     images = np.stack(image_list)
+    images_ts = np.stack(image_ts_list)
+
+    # If some timestamps are erroneous (decreasing), replace them with the average of the surrounding timestamps
+    # (Required for engineering_posters sequence from HQF dataset, where there is an error with images_ts[528])
+    mask = images_ts[:-1] > images_ts[1:]
+    avg_values = (images_ts[:-2] + images_ts[2:]) / 2.0
+    images_ts[1:-1][mask[:-1]] = np.squeeze(avg_values)[mask[:-1]]
+
     images = np.expand_dims(images, axis=-1)
-    images_ts = np.expand_dims(np.stack(image_ts_list), axis=1)
-    # assert np.all(images_ts[:-1] <= images_ts[1:])
+    images_ts = np.expand_dims(images_ts, axis=1)
 
     # zero timestamps
     img_min_ts = np.min(images_ts)
@@ -94,6 +108,11 @@ if __name__ == "__main__":
         print("Processing {}".format(path))
         output_pth = os.path.splitext(path)[0]
         os.makedirs(output_pth, exist_ok=True)
-        bag_to_npy(path, output_pth, args.event_topic, args.image_topic)
+        try:
+            bag_to_npy(path, output_pth, args.event_topic, args.image_topic)
+        except Exception as e:
+            print("Failed to convert {}".format(path))
+            print(e)
+            continue
         if args.remove:
             os.remove(path)

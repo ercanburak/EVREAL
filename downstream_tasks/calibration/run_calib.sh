@@ -1,0 +1,2 @@
+kalibr_calibrate_cameras --bag /calib/reconstruction.bag --target /calib/target.yaml --models 'pinhole-radtan' --topic /dvs/image_reconstructed --approx-sync 0.0000000005 --dont-show-report 
+cp results-cam-calibreconstruction.txt calib/

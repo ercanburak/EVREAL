@@ -38,6 +38,8 @@ def normalize(img, q_min=10, q_max=90):
 def torch2cv2(image):
     image = torch.squeeze(image)  # H x W
     image = image.cpu().numpy()
+    if len(image.shape) == 3:
+        image = np.transpose(image, (1, 2, 0))
     return image
 
 

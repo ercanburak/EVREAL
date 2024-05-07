@@ -12,6 +12,7 @@ from tqdm import tqdm
 from yachalk import chalk
 
 import model as model_arch
+from model.model import ColorNet
 from dataset import MemMapDataset, MySIMDataset
 from utils.eval_metrics import EvalMetricsTracker
 from utils.eval_utils import torch2cv2, normalize
@@ -231,6 +232,7 @@ def get_eval_metrics_tracker(dataset_name, eval_config, method_name, sequence, m
     save_interval = eval_config.get('save_interval', 1)
 
     has_reference_frames = sequence["data_loader"].dataset.has_images
+    color = eval_config.get('color', False)
 
     eval_metrics_tracker = EvalMetricsTracker(save_images=save_images,
                                               save_processed_images=save_processed_images,
@@ -242,7 +244,8 @@ def get_eval_metrics_tracker(dataset_name, eval_config, method_name, sequence, m
                                               quan_eval_start_time=sequence['start_time_s'],
                                               quan_eval_end_time=sequence['end_time_s'],
                                               quan_eval_ts_tol_ms=eval_config['ts_tol_ms'],
-                                              has_reference_frames=has_reference_frames)
+                                              has_reference_frames=has_reference_frames,
+                                              color=color)
     return eval_metrics_tracker
 
 
@@ -258,6 +261,7 @@ def eval_method_on_sequence(dataset_name, eval_config, method_name, model, metho
     eval_infer_all = eval_config.get('eval_infer_all', False)
     post_process_norm = method_config.get('post_process_norm', "none")
     event_tensor_normalization = method_config.get('event_tensor_normalization', False)
+    color = eval_config.get('color', False)
     idx = 0
     old_voxel = None
     for idx, item in enumerate(tqdm(data_loader)):
@@ -337,6 +341,8 @@ class MetricTracker:
         self.data_dict[key]['average'] = 0.0
 
     def update(self, key, value, count=1):
+        if count == 0:
+            return
         if key not in self.data_dict:
             self.init_key(key)
         self.data_dict[key]['total'] += value * count
@@ -347,6 +353,11 @@ class MetricTracker:
         if key not in self.data_dict:
             self.init_key(key)
         return self.data_dict[key]['average']
+
+    def get_count(self, key):
+        if key not in self.data_dict:
+            self.init_key(key)
+        return self.data_dict[key]['count']
 
 
 def print_scores(all_metrics, method_names, dataset_names, config_name):
@@ -360,7 +371,8 @@ def print_scores(all_metrics, method_names, dataset_names, config_name):
         for dataset_name, dataset_metrics in zip(dataset_names, method_metrics):
             for idx, metric in enumerate(dataset_metrics.data_dict):
                 if idx == 0:
-                    headers.append(dataset_name + "\n" + metric.upper())
+                    num_eval = dataset_metrics.get_count(metric)
+                    headers.append(dataset_name + f' ({num_eval})' + "\n" + metric.upper())
                 else:
                     headers.append("\n" + metric.upper())
                 weighted_average_score = dataset_metrics.get_average(metric)

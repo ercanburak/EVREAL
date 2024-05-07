@@ -55,27 +55,32 @@ class MemMapDataset(Dataset):
 
         xs, ys, ts, ps = self.get_events(idx0, idx1)
 
-        try:
-            ts_0, ts_k = ts[0], ts[-1]
-        except:
-            ts_0, ts_k = 0, 0
-
         event_count = len(xs)
-        if event_count < 3:
-            voxel = self.get_empty_voxel_grid()
-        else:
+
+        if event_count > 0:
+            ts_0, ts_k = ts[0], ts[-1]
             xs = torch.from_numpy(xs.astype(np.float32))
             ys = torch.from_numpy(ys.astype(np.float32))
             ts = torch.from_numpy((ts - ts_0).astype(np.float32))
             ps = torch.from_numpy(ps.astype(np.float32))
             voxel = self.get_voxel_grid(xs, ys, ts, ps)
+        else:
+            # Event count is zero, so we need to return an empty voxel grid
+            # But make sure to return the correct timestamps
+            if idx0 > 0:
+                _, _, ts_temp, _ = self.get_events(idx0-1, idx1)
+                ts_0 = ts_temp[-1]
+                if self.voxel_method['method'] == 't_seconds':
+                    ts_k = ts_temp[-1] + self.voxel_method['t']
+                else:
+                    ts_k = self.frame_ts[index]
+            else:
+                ts_0, ts_k = 0, 0
+            voxel = self.get_empty_voxel_grid()
 
+        dt = ts_k - ts_0
         if self.voxel_method['method'] == 't_seconds':
             dt = self.voxel_method['t']
-        else:
-            dt = ts_k - ts_0
-        if dt == 0:
-            dt = np.array(0.0)
 
         if self.has_images and self.voxel_method['method'] != 'between_frames':
             index = self.get_closest_frame_index(ts_k)

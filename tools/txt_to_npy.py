@@ -22,6 +22,7 @@ def txt_to_npy(input_path, output_path, flip=False):
         events_xy[:, 1] = height - 1 - events_xy[:, 1]
     events_polar = data[:, 3].copy()
     event_ts = event_ts.astype('float64')
+    event_ts = event_ts - np.min(event_ts)
     events_xy = events_xy.astype('int16')
     events_polar = events_polar.astype('bool')
     np.save(xy_path, events_xy, allow_pickle=False, fix_imports=False)

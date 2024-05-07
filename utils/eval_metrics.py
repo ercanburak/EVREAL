@@ -261,10 +261,6 @@ class PyIqaMetricFactory:
             self.scores.extend(score)
 
         def calculate(self, img, ref=None):
-            if self.name in ['ahiq', 'maniqa']:
-                img = cv2.resize(img, (0, 0), fx=2, fy=2)
-                if ref is not None:
-                    ref = cv2.resize(ref, (0, 0), fx=2, fy=2)
             img_tensor = cv2torch(img, num_ch=3)
             ref_tensor = None if ref is None else cv2torch(ref, num_ch=3)
             self.image_queue.append(img_tensor)
@@ -299,7 +295,7 @@ class EvalMetricsTracker:
 
     def __init__(self, save_images=False, save_processed_images=False, save_events=False, save_interval=1, output_dir=None, hist_eq='none',
                  quan_eval_metric_names=None, quan_eval_start_time=0, quan_eval_end_time=float('inf'),
-                 quan_eval_ts_tol_ms=float('inf'), has_reference_frames=False):
+                 quan_eval_ts_tol_ms=float('inf'), has_reference_frames=False, color=False):
         if quan_eval_metric_names is None:
             quan_eval_metric_names = ['mse', 'psnr', 'ssim', 'lpips', 'fwl']
         self.save_images = save_images
@@ -315,6 +311,7 @@ class EvalMetricsTracker:
         self.quan_eval_end_time = quan_eval_end_time
         self.quan_eval_ts_tol_ms = quan_eval_ts_tol_ms
         self.has_reference_frames = has_reference_frames
+        self.color = color
         self.quan_eval_indices = []
 
         if self.hist_eq == 'none' and self.save_processed_images:
@@ -336,8 +333,10 @@ class EvalMetricsTracker:
             else:
                 print("Unknown metric " + metric_name)
 
-            if not self.has_reference_frames:
-                self.metrics = [m for m in self.metrics if m.no_ref]
+        if not self.has_reference_frames:
+            self.metrics = [m for m in self.metrics if m.no_ref]
+
+        self.only_no_ref = all([m.no_ref for m in self.metrics])
 
         self.reset()
 

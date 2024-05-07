@@ -1,0 +1,110 @@
+{
+    "root_path": "data/FPVDR",
+    "sequences": 
+    {
+        "indoor_forward_3_davis_with_gt": {
+            "start_time_s": 10.0,
+            "end_time_s": 54.0
+        },
+        "indoor_forward_5_davis_with_gt": {
+            "start_time_s": 10.0,
+            "end_time_s": 50.0
+        },
+        "indoor_forward_6_davis_with_gt": {
+            "start_time_s": 10.0,
+            "end_time_s": 32.0
+        },
+        "indoor_forward_7_davis_with_gt": {
+            "start_time_s": 10.0,
+            "end_time_s": 73.0
+        },
+        "indoor_forward_8_davis": {
+            "start_time_s": 10.0,
+            "end_time_s": 132.0
+        },
+        "indoor_forward_9_davis_with_gt": {
+            "start_time_s": 10.0,
+            "end_time_s": 34.0
+        },
+        "indoor_forward_10_davis_with_gt": {
+            "start_time_s": 10.0,
+            "end_time_s": 33.0
+        },
+        "indoor_forward_11_davis": {
+            "start_time_s": 10.0,
+            "end_time_s": 24.0
+        },
+        "indoor_forward_12_davis": {
+            "start_time_s": 10.0,
+            "end_time_s": 31.0
+        },
+        "indoor_45_1_davis": {
+            "start_time_s": 10.0,
+            "end_time_s": 73.0
+        },
+        "indoor_45_2_davis_with_gt": {
+            "start_time_s": 10.0,
+            "end_time_s": 55.0
+        },
+        "indoor_45_3_davis": {
+            "start_time_s": 10.0,
+            "end_time_s": 57.0
+        },
+        "indoor_45_4_davis_with_gt": {
+            "start_time_s": 10.0,
+            "end_time_s": 47.0
+        },
+        "indoor_45_9_davis_with_gt": {
+            "start_time_s": 10.0,
+            "end_time_s": 40.0
+        },
+        "indoor_45_11_davis": {
+            "start_time_s": 10.0,
+            "end_time_s": 22.0
+        },
+        "indoor_45_12_davis_with_gt": {
+            "start_time_s": 10.0,
+            "end_time_s": 51.0
+        },
+        "indoor_45_13_davis_with_gt": {
+            "start_time_s": 10.0,
+            "end_time_s": 42.0
+        },
+        "indoor_45_14_davis_with_gt": {
+            "start_time_s": 10.0,
+            "end_time_s": 43.0
+        },
+        "indoor_45_16_davis": {
+            "start_time_s": 10.0,
+            "end_time_s": 15.0
+        },
+        "outdoor_forward_1_davis_with_gt": {
+            "start_time_s": 10.0,
+            "end_time_s": 49.0
+        },
+        "outdoor_forward_2_davis": {
+            "start_time_s": 10.0,
+            "end_time_s": 36.0
+        },
+        "outdoor_forward_3_davis_with_gt": {
+            "start_time_s": 10.0,
+            "end_time_s": 92.0
+        },
+        "outdoor_forward_5_davis_with_gt": {
+            "start_time_s": 10.0,
+            "end_time_s": 22.0
+        },
+        "outdoor_forward_6_davis": {
+            "start_time_s": 10.0,
+            "end_time_s": 34.0
+        },
+        "outdoor_forward_9_davis": {
+            "start_time_s": 10.0,
+            "end_time_s": 43.0
+        },
+        "outdoor_forward_10_davis": {
+            "start_time_s": 10.0,
+            "end_time_s": 59.0
+        }
+    }
+}

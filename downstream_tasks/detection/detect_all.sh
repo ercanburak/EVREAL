@@ -1,0 +1,9 @@
+python detect.py --input ../../outputs/std/MVSEC_night_1/outdoor_night1_data/E2VID/ --output outputs/E2VID --conf-thres 0
+python detect.py --input ../../outputs/std/MVSEC_night_1/outdoor_night1_data/FireNet/ --output outputs/FireNet --conf-thres 0
+python detect.py --input ../../outputs/std/MVSEC_night_1/outdoor_night1_data/E2VID+/ --output outputs/E2VID+ --conf-thres 0
+python detect.py --input ../../outputs/std/MVSEC_night_1/outdoor_night1_data/FireNet+/ --output outputs/FireNet+  --conf-thres 0
+python detect.py --input ../../outputs/std/MVSEC_night_1/outdoor_night1_data/SPADE-E2VID/ --output outputs/SPADE-E2VID --conf-thres 0
+python detect.py --input ../../outputs/std/MVSEC_night_1/outdoor_night1_data/SSL-E2VID/ --output outputs/SSL-E2VID --conf-thres 0
+python detect.py --input ../../outputs/std/MVSEC_night_1/outdoor_night1_data/ET-Net/ --output outputs/ET-Net --conf-thres 0
+python detect.py --input ../../outputs/std/MVSEC_night_1/outdoor_night1_data/HyperE2VID/ --output outputs/HyperE2VID --conf-thres 0
+python detect.py --input ../../outputs/std/MVSEC_night_1/outdoor_night1_data/groundtruth/ --output outputs/groundtruth --conf-thres 0
