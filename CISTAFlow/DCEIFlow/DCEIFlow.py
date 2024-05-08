@@ -63,17 +63,13 @@ class DCEIFlow(nn.Module):
         
         self.image_padder = ImagePadder(image_dim=None, min_size=32) #args.image_dim
         self.ds = 8 #args.ds
-        self.is_bi = False #args.is_bi
+        self.is_bi = False 
         self.args = get_args()
         self.small = False
         self.dropout = 0
         self.alternate_corr = False
         
-        # upflow_functions = {
-        #     4: upflow4,
-        #     8: upflow8,
-        # }
-        # selected_upflow_function = upflow_functions.get(self.ds)
+
         self.selected_upflow_function = globals().get(f"upflow{self.ds}")
 
         
@@ -99,10 +95,7 @@ class DCEIFlow(nn.Module):
             self.enet = SmallEncoder(input_dim=self.event_bins, output_dim=128, norm_fn='instance', dropout=self.dropout)
         else:
             self.fnet = BasicEncoder(ds=self.ds, input_dim=1, output_dim=256, norm_fn='instance', dropout=self.dropout) 
-            #---------------------------
             self.cnet = BasicEncoder(ds=self.ds, input_dim=1, output_dim=hdim+cdim, norm_fn='batch', dropout=self.dropout)
-            # self.cnet = BasicEncoder(ds=self.ds, input_dim=1, output_dim=hdim+cdim, norm_fn='instance', dropout=self.dropout)
-            #---------------------------
             self.update_block = BasicUpdateBlockNoMask(self.args, hidden_dim=hdim)
             self.fusion = EIFusion(input_dim=256)
             self.enet = BasicEncoder(ds=self.ds, input_dim=self.event_bins, output_dim=256, norm_fn='instance', dropout=self.dropout)
@@ -163,9 +156,6 @@ class DCEIFlow(nn.Module):
     def forward(self, event_voxel, image1, image2=None, reversed_event_voxel=None, iters=6, flow_init=None, upsample=True):
         """ Estimate optical flow between pair of frames """
 
-        # image1 = batch['image1']
-        # image1 = 2 * (image1 / 255.0) - 1.0
-        # image1 = image1.contiguous()
         
         image1 = 2 * image1 - 1.0
         image1 = self.image_padder.pad(image1)
@@ -177,12 +167,7 @@ class DCEIFlow(nn.Module):
             image2 = 2 * image2 - 1.0
             image2 = self.image_padder.pad(image2)
             image2 = image2.contiguous()
-            # image2 = batch['image2']
-            # image2 = 2 * (image2 / 255.0) - 1.0
-            # image2 = image2.contiguous()
 
-        # event_voxel = batch['event_voxel']
-        # event_voxel = 2 * event_voxel - 1.0
         
         event_voxel = self.image_padder.pad(event_voxel)
         event_voxel = event_voxel.contiguous()
@@ -197,8 +182,6 @@ class DCEIFlow(nn.Module):
             if image2 is not None: #self.isbi and 'reversed_event_voxel' in batch.keys():
                 assert image2 is not None
                 fmap1, fmap2 = self.fnet([image1, image2])
-                # reversed_event_voxel = batch['reversed_event_voxel']
-                # reversed_event_voxel = 2 * reversed_event_voxel - 1.0
                 if reversed_event_voxel is not None:
                     reversed_event_voxel = self.image_padder.pad(reversed_event_voxel).contiguous()
                     reversed_emap = self.enet(reversed_event_voxel)
@@ -228,8 +211,7 @@ class DCEIFlow(nn.Module):
             inp = torch.relu(inp)
 
         coords0, coords1 = self.initialize_flow(image1)
-        # print(image1.shape, event_voxel.shape, fmap1.shape, pseudo_fmap2.shape, coords1.shape)
-        
+
         if flow_init is not None:
             coords1 = coords1 + flow_init
 

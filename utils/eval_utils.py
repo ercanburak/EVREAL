@@ -1,3 +1,5 @@
+'''add save_flow, make_event_preview, save_events'''
+
 from os.path import join
 from pathlib import Path
 
@@ -83,7 +85,7 @@ def save_inferred_image(folder, image, idx):
     image_for_png = np.round(image * 255).astype(np.uint8)
     cv2.imwrite(png_path, image_for_png)
 
-#---------
+
 def save_flow(folder, flow, idx):
     png_name = 'frame_{:010d}.png'.format(idx)
     png_path = join(folder, png_name)

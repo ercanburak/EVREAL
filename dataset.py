@@ -10,7 +10,7 @@ import torch.nn.functional as F
 from torchvision import transforms
 
 # local modules
-from utils.event_utils import events_to_voxel_torch, events_to_voxel_grid_pytorch
+from utils.event_utils import events_to_voxel_torch
 from utils.util import read_json
 
 
@@ -30,10 +30,6 @@ class MemMapDataset(Dataset):
         self.voxel_method = voxel_method
         self.set_voxel_method()
         
-        # self.pad_right = 640 - 240
-        # self.pad_bottom = 480 - 180
-        
-        # self.resize_transform = transforms.Resize((640, 480))
 
         if max_length is not None:
             self.length = min(self.length, max_length + 1)
@@ -98,10 +94,6 @@ class MemMapDataset(Dataset):
 
         voxel_timestamp = torch.tensor(ts_k, dtype=torch.float64)
         
-        #---------------
-        # frame = self.resize_transform(frame)
-        # voxel = self.resize_transform(voxel)
-        # ---------------
         item = {'frame': frame,
                 'events': voxel,
                 'frame_timestamp': frame_timestamp,
@@ -138,10 +130,16 @@ class MemMapDataset(Dataset):
             k_indices.append([idx0, idx1])
         return k_indices
 
+    #---------------- My compute_low_k_indices ---------------
     def compute_low_k_indices(self):
         """
-        For each block of k events, find the start and
-        end indices of the corresponding events
+        find the start and end indices of the corresponding events per reconstruction 
+        according to N and k
+        N:  the number of events between frames
+        k:  the target event count per reconstruction
+        
+        We either divide events between two consecutive frames into multiple groups 
+        or combine events across several frames into a single group for the reconstruction and flow estimation.
         """
         k_indices = []
         start_idx = 0
@@ -211,11 +209,11 @@ class MemMapDataset(Dataset):
         if self.voxel_method['method'] == 'k_events':
             self.length = max(int(self.num_events / (self.voxel_method['k'] - self.voxel_method['sliding_window_w'])), 0)
             self.event_indices = self.compute_k_indices()
+        #------------- My 'low_k_events' --------------#
         elif self.voxel_method['method'] == 'low_k_events':
             self.event_indices =  self.compute_low_k_indices()
             self.length = len(self.event_indices)
-            # self.length = max(int(self.num_events / (self.voxel_method['k'] - self.voxel_method['sliding_window_w'])), 0)
-            # self.event_indices = self.compute_k_indices()
+        #----------------------------------------------#
         elif self.voxel_method['method'] == 't_seconds':
             duration = self.tk - self.t0
             self.length = max(int(duration / (self.voxel_method['t'] - self.voxel_method['sliding_window_t'])), 0)
@@ -255,9 +253,7 @@ class MemMapDataset(Dataset):
         create voxel grid merging positive and negative events (resulting in NUM_BINS x H x W tensor).
         """
         # generate voxel grid which has size self.num_bins x H x W
-        #---------------------
         voxel_grid = events_to_voxel_torch(xs, ys, ts, ps, self.num_bins, sensor_size=self.sensor_resolution)
-        # voxel_grid = events_to_voxel_grid_pytorch(xs, ys, ts, ps, self.num_bins, width=self.sensor_resolution[1], height=self.sensor_resolution[0])
         return voxel_grid
 
     def get_frame(self, index):
@@ -343,7 +339,7 @@ class MemMapDataset(Dataset):
 
 
 class MySIMDataset(Dataset):
-
+    '''Read my simulated datasets, the same as above, but must be 'between_frames' '''
     def __init__(self, data_path, sensor_resolution=None, num_bins=5,
                  voxel_method=None, max_length=None, keep_ratio=1):
         self.num_bins = num_bins
@@ -353,9 +349,10 @@ class MySIMDataset(Dataset):
         self.has_images = True
         self.channels = self.num_bins
         self.load_data(data_path)
-        voxel_method = {'method': 'between_frames'} # must be between frames for SIM data
-        # if voxel_method is None:
-        #     voxel_method = {'method': 'between_frames'}
+        #-------- must be between frames for SIM data ------
+        voxel_method = {'method': 'between_frames'} 
+        #---------------------------------------------------
+        
         self.voxel_method = voxel_method
         self.set_voxel_method()
 
@@ -459,8 +456,12 @@ class MySIMDataset(Dataset):
 
     def compute_low_k_indices(self):
         """
-        For each block of k events, find the start and
-        end indices of the corresponding events
+        find the start and end indices of the corresponding events per reconstruction 
+        according to N and k
+        N:  the number of events between frames
+        k:  the target event count per reconstruction
+        We either divide events between two consecutive frames into multiple groups 
+        or combine events across several frames into a single group for the reconstruction and flow estimation.
         """
         k_indices = []
         start_idx = 0
@@ -577,10 +578,7 @@ class MySIMDataset(Dataset):
         :param ps: tensor containg p coords of events
         create voxel grid merging positive and negative events (resulting in NUM_BINS x H x W tensor).
         """
-        # generate voxel grid which has size self.num_bins x H x W
-        #---------------------
         voxel_grid = events_to_voxel_torch(xs, ys, ts, ps, self.num_bins, sensor_size=self.sensor_resolution)
-        # voxel_grid = events_to_voxel_grid_pytorch(xs, ys, ts, ps, self.num_bins, width=self.sensor_resolution[1], height=self.sensor_resolution[0])
         return voxel_grid
 
     def get_frame(self, index):

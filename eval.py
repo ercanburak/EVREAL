@@ -71,10 +71,12 @@ def get_sequences(dataset_config, dataset_kwargs):
     for sequence_name, sequence in tqdm(sequences_config.items()):
         sequence_path = sequence.get('sequence_path', os.path.join(dataset_root, sequence_name))
         sequence['name'] = sequence_name
+        #-------------- test my SIM data --------------
         if dataset_config['name'] != 'SIM':
             dataset = MemMapDataset(sequence_path, **dataset_kwargs)
         else:
-            dataset = MySIMDataset(sequence_path, **dataset_kwargs) #------
+            dataset = MySIMDataset(sequence_path, **dataset_kwargs) 
+        #----------------------------------------------
         sequence['data_loader'] = DataLoader(dataset, pin_memory=True)
         min_t, max_t = dataset.get_min_max_t()
         if 'start_time_s' not in sequence:
@@ -127,31 +129,28 @@ def get_method_config(method_name):
     return method_config
 
 
-def get_model_from_checkpoint_path(model_name, checkpoint_path, model_mode=None):
+def get_model_from_checkpoint_path(model_name, checkpoint_path):
     """
     Instantiate a PyTorch model class from a given model name and checkpoint path. According to the model name,
     each checkpoint is parsed and each model class is instantiated with the correct parameters.
     """
     checkpoint = torch.load(checkpoint_path, device)
     
-    if "CISTA-TC" in model_name:
+   
+    if "CISTA-LSTC" in model_name:
+        last_name = model_name.split('-')[-1]
+        model = CistaLSTCNet()
+        model.num_encoders = 3 # for cropper
+        state_dict = checkpoint['state_dict']
+    elif "CISTA-TC" in model_name:
         model = CistaTCNet()
         model.num_encoders = 3 # for cropper
         state_dict = checkpoint['state_dict']
-    elif "CISTA" in model_name and model_name not in ["CISTA-EIFlow", "CISTA-ERAFT"]: #"CISTA-LSTC", CISTA-D, CISTA,CISTA-LSTM, CISTA-LSTC-Z0/recI, CISTA-LSTC-d1/3/5/7
-        last_name = model_name.split('-')[-1]
-        depth = int(last_name[-1]) if ('d' in last_name and last_name != 'old') else 5
-        model = CistaLSTCNet(depth=depth, model_mode=model_mode)
-        model.num_encoders = 3 # for cropper
-        state_dict = checkpoint['state_dict']
-    
     elif "CISTA-EIFlow" in model_name:
-        # kwargs = { "num_bins": 5}
         model = DCEIFlowCistaNet()
         model.num_encoders = 3 # for cropper
         state_dict = checkpoint['state_dict']
     elif "CISTA-ERAFT" in model_name:
-        # kwargs = {"num_bins": 5}
         model = ERAFTCistaNet()
         model.num_encoders = 3 # for cropper
         state_dict = checkpoint['state_dict']
@@ -215,10 +214,7 @@ def get_model_from_checkpoint_path(model_name, checkpoint_path, model_mode=None)
 
 def get_cropper(model, data_loader):
     height, width = get_height_width(data_loader)
-    # if hasattr(model, "num_encoders"):
     cropper = CropParameters(width, height, model.num_encoders)
-    # else:
-    #     cropper = CropParameters(width, height, 3)
     return cropper
 
 
@@ -228,8 +224,10 @@ def get_eval_metrics_tracker(dataset_name, eval_config, method_name, sequence, m
     save_images = eval_config.get('save_images', True)
     save_processed_images = save_images and eval_config['histeq'] != 'none'
     
+    #-------- add options: save_events, save_interval -------
     save_events = eval_config.get('save_events', False)
     save_interval = eval_config.get('save_interval', 1)
+    #--------------------------------------------------------
 
     has_reference_frames = sequence["data_loader"].dataset.has_images
     color = eval_config.get('color', False)
@@ -287,6 +285,7 @@ def eval_method_on_sequence(dataset_name, eval_config, method_name, model, metho
             voxel = normalize_event_tensor(voxel)
         voxel = voxel.to(device)
         voxel = cropper.pad(voxel)
+        #------------ input data for CISTAs --------
         if 'CISTA-EIFlow' in model_name:
             batch_data = {'event_voxel':voxel}
             with CudaTimer(method_name):
@@ -294,8 +293,6 @@ def eval_method_on_sequence(dataset_name, eval_config, method_name, model, metho
         elif 'CISTA-ERAFT' in model_name:
             if idx ==0 or old_voxel is None:
                 old_voxel = torch.zeros_like(voxel)
-            # print(idx)
-            # print(old_voxel.shape)
             batch_data = {'event_voxel':voxel, 'event_voxel_old':old_voxel}
             with CudaTimer(method_name):
                 output = model(batch_data)
@@ -307,18 +304,17 @@ def eval_method_on_sequence(dataset_name, eval_config, method_name, model, metho
         image = cropper.crop(output['image'])
         image = torch2cv2(image)
         image = post_process_normalization(image, post_process_norm)
-        #---------------------
+        #-------output flow (CISTA-EIFlow / CISTA-ERAFT)-------------
         if 'flow' in output.keys():
             flow = output['flow']
-            # flow = torch2cv2(flow) #------
         else:
             flow = None
         if has_reference_frames:
             ref_frame = torch2cv2(ref_frame)
-            #---------------------
+            #---------add post normalization for ECD and MVSEC datasets (due to low contrast)------------
             if dataset_name in ['ECD', 'MVSEC']:
                 ref_frame = post_process_normalization(ref_frame, 'standard')
-        eval_metrics_tracker.update(idx, image, ref_frame, pred_frame_ts, ref_frame_ts, flow, voxel) #-----flow, voxel
+        eval_metrics_tracker.update(idx, image, ref_frame, pred_frame_ts, ref_frame_ts, flow, voxel) #-----add flow, voxel ----
         eval_metrics_tracker.save_custom_metric(idx, "event_rate", event_rate)
     eval_metrics_tracker.finalize(idx)
     num_evaluated = eval_metrics_tracker.get_num_quan_evaluations()
@@ -423,10 +419,9 @@ def eval_method_with_config(eval_config, method_name, datasets, metrics):
     print(color_progress("Starting method " + method_name))
     checkpoint_path = method_config['model_path']
     model_name = method_config['model_name']
-    model_mode = method_config['model_mode'] if 'model_mode' in method_config.keys() else None #------
     method_metrics = []
     try:
-        model = get_model_from_checkpoint_path(model_name, checkpoint_path, model_mode) #-----
+        model = get_model_from_checkpoint_path(model_name, checkpoint_path)
     except Exception as e:
         print(color_error(f"Exception while getting method {method_name} from checkpoint path {checkpoint_path}"))
         print(color_error(e))
@@ -443,11 +438,9 @@ def eval_method_with_config(eval_config, method_name, datasets, metrics):
                 print(color_progress(f"Evaluating {method_name} method with {eval_config['name']} evaluation config"
                                      f" on {sequence['name']} sequence from {dataset['name']} dataset. "
                                      f"({sequence_no}/{num_sequences} for this method and config)"))
-                #-------------
-                # if sequence['name'] == 'slider_depth':
+
                 results = eval_method_on_sequence(dataset['name'], eval_config, method_name, model, method_config, sequence, metrics, model_name) #------
-                # else:
-                #     continue
+
                 num_evaluated, mean_scores = results
                 sequence_no += 1
                 for metric_name, score in mean_scores.items():
@@ -476,9 +469,6 @@ def post_process_normalization(img, norm):
     elif norm == 'exprobust':
         img = np.exp(img)
         img = normalize(img, 1, 99)
-    elif norm == 'mean_bright': #------- not good
-        bright_reduction = img.mean() - 0.5
-        img = np.clip(img - bright_reduction, 0, 1)
     else:
         raise ValueError(f"Unrecognized normalization argument: {norm}")
     return img
@@ -510,7 +500,7 @@ def evaluate(method_names, eval_config_names=None, dataset_names=None, metrics=N
         the https://github.com/chaofengc/IQA-PyTorch repo.
     """
     if method_names is None:
-        method_names = ['E2VID', 'E2VID+', 'FireNet', 'FireNet+', 'SPADE-E2VID', 'SSL-E2VID', 'ET-Net', 'HyperE2VID']
+        method_names = ['CISTA', 'CISTA-TC', 'CISTA-LSTC', 'CISTA-EIFlow', 'CISTA-ERAFT', 'E2VID', 'E2VID+', 'FireNet', 'FireNet+', 'SPADE-E2VID', 'SSL-E2VID', 'ET-Net', 'HyperE2VID']
     if eval_config_names is None:
         eval_config_names = ['std']
     if dataset_names is None:
@@ -541,8 +531,5 @@ if __name__ == '__main__':
     parser.add_argument('-qm', '--metrics', nargs='+', type=str,
                         help='quantitative evaluation metrics that will be used calculate scores')
 
-    # parser.add_argument('--image_dim', nargs=2, type=int,
-    #                     help='image dim HxW')
-    
     args = parser.parse_args()
     evaluate(args.method, args.config, args.dataset, args.metrics)

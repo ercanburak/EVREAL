@@ -59,6 +59,7 @@ def events_to_voxel_torch(xs, ys, ts, ps, num_bins, device=None, sensor_size=(18
     return bins
 
 
+#------------ My events_to_voxel_grid, the same with above ----------
 def events_to_voxel_grid_pytorch(xs, ys, ts, ps, num_bins, width, height):#, divide_sign=True):
     """
     Build a voxel grid with bilinear interpolation in the time domain from a set of events.

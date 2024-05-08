@@ -17,8 +17,9 @@ from utils.create_vid import create_vid_from_recon_folder
 from utils.eval_utils import cv2torch, torch2cv2
 from utils.eval_utils import append_timestamp, append_result, ensure_dir, save_inferred_image, save_flow, save_events
 
-# ------ For flow
+# ------ For flow --------
 def merge_optical_flow(flow):
+    '''Merge flow in HSV to show'''
     
     flow_x, flow_y = flow[0,...], flow[1,...]
     h, w = flow_x.shape[:2]
@@ -41,9 +42,14 @@ def merge_optical_flow(flow):
     return rgb
 
 
-# -------- For FWL, real data w/o real flow
+# -------- For FWL, real data w/o real flow ----
 def voxel_warping_flow_loss(voxel, displacement, output_images=False, reverse_time=False):
-    """ Adapted from:
+    """ 
+    Adapted from
+    Stoffregen, Timo, et al. "Reducing the sim-to-real gap for event cameras." Computer Vision–ECCV 2020: 16th European Conference, Glasgow, UK, August 23–28, 2020, Proceedings, Part XXVII 16. Springer International Publishing, 2020.
+    https://github.com/TimoStoff/event_cnn_minimal
+    
+    Adapted from:
         Temporal loss, as described in Eq. (2) of the paper 'Learning Blind Video Temporal Consistency',
         Lai et al., ECCV'18.
 
@@ -67,7 +73,7 @@ def voxel_warping_flow_loss(voxel, displacement, output_images=False, reverse_ti
     displacement_y = displacement[:, 1, :, :]  # N x H x W
     displacement_increment = 1.0/(t_channels-1.0)
     voxel_grid_warped = torch.zeros((v_shape[0], 1, t_height, t_width), dtype=voxel.dtype, device=voxel.device) 
-    # print(voxel_grid_warped.shape, xx.shape, displacement_x.shape, displacement_y.shape)
+    
     voxel_grid_warped_save = torch.zeros((v_shape[0], t_channels, t_height, t_width), dtype=voxel.dtype, device=voxel.device) 
     for i in range(t_channels):
         warp_magnitude_ratio = (1.0-i*displacement_increment) if reverse_time else i*displacement_increment
@@ -77,13 +83,9 @@ def voxel_warping_flow_loss(voxel, displacement, output_images=False, reverse_ti
         warping_grid_y = yy + displacement_y*warp_magnitude_ratio # N x H x W
         warping_grid = torch.stack([warping_grid_x, warping_grid_y], dim=3)  # 1 x H x W x 2
         #Normalize the warping grid to between -1 and 1 (necessary for grid_sample API)
-        warping_grid[:,:,:,1] = (2.0*warping_grid[:,:,:,1])/(t_height)-1.0 #(2.0*warping_grid[:,:,:,1])/(t_height-1)-1.0
+        warping_grid[:,:,:,1] = (2.0*warping_grid[:,:,:,1])/(t_height)-1.0
         warping_grid[:,:,:,0] = (2.0*warping_grid[:,:,:,0])/(t_width)-1.0
-        # print(xx.max(), xx.min(), yy.max(),yy.min())
-        # print(warping_grid[:,:,:,1].max(), warping_grid[:,:,:,1].min(), warping_grid[:,:,:,0].max(), warping_grid[:,:,:,0].min())
         voxel_channel_warped = F.grid_sample(voxel, warping_grid,  align_corners=True) #, padding_mode='reflection'
-        # print(voxel_channel_warped[:,i:i+1], voxel[:,i:i+1])
-        # print(voxel_channel_warped.shape, voxel.shape, ((displacement_x*warp_magnitude_ratio)!=0).sum(), ((displacement_y*warp_magnitude_ratio)!=0).sum(), (voxel_channel_warped[:,i:i+1]-voxel[:,i:i+1]).abs().mean())
         voxel_grid_warped+=voxel_channel_warped[:, i:i+1, :, :].detach()
         voxel_grid_warped_save[:, i:i+1, :,:] = voxel_channel_warped[:, i:i+1, :, :].detach()
 
@@ -99,6 +101,7 @@ def voxel_warping_flow_loss(voxel, displacement, output_images=False, reverse_ti
         return tc_loss, additional_output
     else:
         return tc_loss
+
 
 class BaseMetric:
     """Base class for quantitative evaluation metrics"""
@@ -157,6 +160,7 @@ class BaseMetric:
 
     def get_name(self):
         return self.name
+
 
 class FWLMetric(BaseMetric):
     def __init__(self):
@@ -297,14 +301,14 @@ class EvalMetricsTracker:
                  quan_eval_metric_names=None, quan_eval_start_time=0, quan_eval_end_time=float('inf'),
                  quan_eval_ts_tol_ms=float('inf'), has_reference_frames=False, color=False):
         if quan_eval_metric_names is None:
-            quan_eval_metric_names = ['mse', 'psnr', 'ssim', 'lpips', 'fwl']
+            quan_eval_metric_names = ['mse', 'psnr', 'ssim', 'lpips'] #'fwl'
         self.save_images = save_images
         self.save_events = save_events
         # self.save_flow = save_flow
         self.save_processed_images = save_processed_images
         self.save_interval = save_interval
         self.output_dir = output_dir
-        self.output_flow_dir = join(output_dir, 'flow')#------
+        self.output_flow_dir = join(output_dir, 'flow')#------ output folder for flow
         
         self.hist_eq = hist_eq
         self.quan_eval_start_time = quan_eval_start_time
@@ -363,6 +367,7 @@ class EvalMetricsTracker:
         event_images = None
         for metric in self.metrics:
             try:
+                #------ add fwl
                 if metric.name == 'fwl':
                     metric.update(evs, flow, output_images=True)
                     event_images = metric.event_images #voxel_grid and voxel_grid_warped
@@ -390,15 +395,10 @@ class EvalMetricsTracker:
         if self.has_reference_frames:
             ref = np.clip(ref, 0.0, 1.0)
         #------------
-        # if self.save_images:
-        #     save_inferred_image(self.output_dir, img, idx)
         org_img = np.copy(img)
         img = self.histogram_equalization(img)
         if self.has_reference_frames:
             ref = self.histogram_equalization(ref)
-
-        # if self.save_processed_images:
-        #     save_inferred_image(self.processed_output_dir, img, idx)
 
         inside_eval_cut = self.quan_eval_start_time <= img_ts <= self.quan_eval_end_time
         img_ref_time_diff_ms = abs(ref_ts - img_ts) * 1000
@@ -406,16 +406,12 @@ class EvalMetricsTracker:
         if inside_eval_cut and inside_eval_ts_tolerance:
             event_images = self.update_quantitative_metrics(idx, img, ref, evs, flow)
             #------------
-            # only save frames if frames are evaluate
             if idx ==0 or (idx%self.save_interval) == 0:
                 if self.save_images:
-                    save_inferred_image(self.output_dir, org_img, idx) #ref -------org_img
+                    save_inferred_image(self.output_dir, org_img, idx)
                 if self.save_processed_images:
                     save_inferred_image(self.processed_output_dir, img, idx)
-                #----------------
                 if self.save_images and flow is not None:
-                    # if not os.path.exists(self.output_flow_dir):
-                    #     os.makedirs(self.output_flow_dir)
                     ensure_dir(self.output_flow_dir)
                     flow = torch2cv2(flow)
                     rgb_flow = merge_optical_flow(flow)

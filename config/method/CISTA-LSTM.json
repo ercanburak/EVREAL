@@ -1,7 +1,0 @@
-{
-	"model_name": "CISTA-LSTM",
-	"model_mode": "cista-lstm",
-	"model_path": "pretrained/CISTA-LSTC/cista-lstm.pth.tar",
-	"event_tensor_normalization": true,
-	"post_process_norm": "none"
-}

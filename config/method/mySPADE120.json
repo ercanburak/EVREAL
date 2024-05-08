@@ -1,6 +1,0 @@
-{
-	"model_name": "mySPADE-120",
-	"model_path": "pretrained/mySPADE/spade_120.pth.tar",
-	"event_tensor_normalization": true,
-	"post_process_norm": "none"
-}

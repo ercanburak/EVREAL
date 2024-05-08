@@ -3,8 +3,7 @@
         "num_bins": 5,
         "voxel_method": {
             "method": "low_k_events",
-            "k": 15000,
-            "sliding_window_w": 0
+            "k": 15000
         },
         "keep_ratio": 1.0
     },

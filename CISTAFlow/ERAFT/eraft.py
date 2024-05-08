@@ -40,10 +40,7 @@ class ERAFT(nn.Module):
         super(ERAFT, self).__init__()
         args = get_args()
         self.args = args
-        # self.image_padder = ImagePadder(min_size=32)
         self.image_padder = ImagePadder(image_dim=None, min_size=32) #cfgs.image_dim
-        #-----------
-        # self.subtype = config['subtype'].lower()
         self.subtype = 'standard' 
 
         assert (self.subtype == 'standard' or self.subtype == 'warm_start')
@@ -53,7 +50,6 @@ class ERAFT(nn.Module):
         args.corr_levels = 4
         args.corr_radius = 4
         
-        # self.event_bins = 2 * cfgs.num_bins if cfgs.is_pol else cfgs.num_bins
         self.event_bins = num_bins
 
         # feature network, context network, and update block
@@ -170,10 +166,8 @@ class ERAFT(nn.Module):
                 flow_up = self.upsample_flow(coords1 - coords0, up_mask)
 
             flow_predictions.append(flow_up)
-            # flow_predictions.append(self.image_padder.unpad(flow_up))
             flow_up = self.image_padder.unpad(flow_up)
 
-        # return coords1 - coords0, flow_predictions
         return dict(
                     flow_preds=flow_predictions,
                     flow_init=coords1 - coords0,

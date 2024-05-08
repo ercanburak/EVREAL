@@ -1,6 +1,0 @@
-{
-	"model_name": "CISTA-EIFlow-120",
-	"model_path": "pretrained/CISTA-EIFlow/cista-eiflow-120.pth.tar",
-	"event_tensor_normalization": true,
-	"post_process_norm": "none"
-}
