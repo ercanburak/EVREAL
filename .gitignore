@@ -1,4 +1,4 @@
 outputs
 **/__pycache__/
 __pycache__/
-run_eval.sh
+run_eval.sh*

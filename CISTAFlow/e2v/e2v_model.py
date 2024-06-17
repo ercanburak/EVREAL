@@ -1,95 +1,7 @@
 import torch.nn as nn
 from .base_layers import *
 from ..DCEIFlow.DCEIFlow import DCEIFlow
-from ..ERAFT.eraft import ERAFT
-from ..utils.flow_utils import FrameWarp
-
-class CistaNet(nn.Module):
-     def __init__(self, base_channels=64, depth=5, num_bins=5):
-          super(CistaNet, self).__init__()
-          '''
-               CISTA network for events-to-video reconstruction
-          '''
-          self.model_mode = model_mode
-          self.num_bins = num_bins
-          self.depth = depth
-
-          
-          self.We = ConvLayer(in_channels=self.num_bins, out_channels=int(base_channels/2), kernel_size=3,\
-          stride=1, padding=1, groups=1) #We_new
-          
-           
-          self.Wi = ConvLayer(in_channels=1, out_channels=int(base_channels/2), kernel_size=3,\
-               stride=1, padding=1) 
-          self.W0 = ConvLayer(in_channels=base_channels, out_channels=base_channels, kernel_size=3,\
-               stride=2, padding=1)
-          
-          self.P0 = ConvLayer(in_channels=base_channels, out_channels=2*base_channels, kernel_size=3,\
-               stride=1, padding=1, activation=None, norm=None)#64
-
-          lista_block = IstaBlock(base_channels=base_channels, is_recurrent=False) 
-          self.lista_blocks = nn.ModuleList([lista_block for i in range(self.depth)])
-          
-
-          self.Dg = ConvLayer(in_channels=2*base_channels, out_channels=base_channels, kernel_size=3, stride=1, padding=1,
-               activation='relu', norm=None) 
-
-
-          self.upsamp_conv = UpsampleConvLayer(in_channels=base_channels, out_channels=base_channels, kernel_size=3, stride=1, padding=0, activation=None) #activation='relu'
-          
-          self.final_conv = ConvLayer(in_channels=base_channels, out_channels=1, \
-               kernel_size=3, stride=1, padding=1)
-          
-          self.sigmoid = nn.Sigmoid()
-          self.prev_rec = None
-     
-     def reset_states(self):
-     #    self.unetrecurrent.states = [None] * self.unetrecurrent.num_encoders
-        self.prev_rec = None
-
-     def forward(self, events):
-          '''
-          Inputs:
-               events: torch.tensor, float32, [batch_size, num_bins, H, W]
-                    Event voxel grid
-          Outputs:
-               dict {'image': rec_I}: torch.tensor, float32, [batch_size, 1, H, W]
-                    Reconstructed frame
-
-          '''
-          if self.prev_rec is None:
-               self.prev_rec = torch.zeros(events.shape[0], 1, events.shape[2], events.shape[3],
-                                         device=events.device)
-          
-
-          x_E = self.We(events)
-          x_I = self.Wi(self.prev_rec)
-          x1 = connect_cat(x_E, x_I) 
-
-          x1 = self.W0(x1) 
-
-          z = self.P0(x1)
-
-          tmp = z.clone()
-          for i in range(self.depth):
-               tmp = self.lista_blocks[i].D(tmp)
-               x = x1- tmp
-               x = self.lista_blocks[i].P(x)
-               x = x + z
-               z = softshrink(x, self.lista_blocks[i].Lambda) 
-               tmp = z   
-
-          rec_I = self.Dg(z)
-
-          rec_I = self.upsamp_conv(rec_I)
-          rec_I = self.sigmoid(self.final_conv(rec_I))
-          
-
-          output_dict = {'image': rec_I} 
-          self.prev_rec = rec_I.detach()
-          
-          return output_dict
-
+from .flow_utils import FrameWarp
 
 
 class CistaTCNet(nn.Module):
@@ -218,7 +130,6 @@ class CistaLSTCNet(nn.Module):
           '''
                CISTA-LSTC network for events-to-video reconstruction
           '''
-          self.model_mode = model_mode
           self.num_bins = num_bins
           self.depth = depth
 
@@ -280,11 +191,8 @@ class CistaLSTCNet(nn.Module):
 
           x1 = self.W0(x1) 
 
-          if self.model_mode in ['cista']:
-               z = self.P0(x1)
-          else:
-               z, state = self.P0(x1, self.states[-2], self.states[0] if self.states[0] is not None else None)
-               states.append(state)
+          z, state = self.P0(x1, self.states[-2], self.states[0] if self.states[0] is not None else None)
+          states.append(state)
           tmp = z.clone()
           for i in range(self.depth):
                tmp = self.lista_blocks[i].D(tmp)
@@ -295,11 +203,8 @@ class CistaLSTCNet(nn.Module):
                tmp = z   
           states.append(z)
 
-          if self.model_mode == 'cista':
-               rec_I = self.Dg(z)
-          else:
-               rec_I, state = self.Dg(z, self.states[-1])
-               states.append(state)
+          rec_I, state = self.Dg(z, self.states[-1])
+          states.append(state)
           
           rec_I = self.upsamp_conv(rec_I)
  
@@ -387,40 +292,3 @@ class DCEIFlowCistaNet(BaseFlowRec):
 
           return output_dict #(image, flow)
 
-
-# single GPU
-class ERAFTCistaNet(BaseFlowRec):
-     '''CISTA-ERAFT: CISTA-LSTC + ERAFT'''
-     def __init__(self):
-          super(ERAFTCistaNet, self).__init__()
-          self.event_flownet = ERAFT(self.num_bins)
-
-     def forward(self, batch_data):
-          '''
-          batch_data: event_voxel_old, event_voxel (a pair of event voxel grids)
-          '''
-          if self.cista_net.prev_rec is None:
-               self.cista_net.prev_rec = torch.zeros(batch_data['event_voxel'].shape[0], 1, batch_data['event_voxel'].shape[2], batch_data['event_voxel'].shape[3],
-                                         device=batch_data['event_voxel'].device)
-          batch_flow = self.event_flownet(image1=batch_data['event_voxel_old'], image2=batch_data['event_voxel'])
-          flow_final = batch_flow['flow_final']
-          
-          # valid_mask = (abs(flow_final)>0.1) & (abs(flow_final)<100)
-          # flow_final *= valid_mask
-          
-          if self.fix_net_name == 'flow':
-               flow_final = flow_final.detach()
-               flow_final.requires_grad = False
-          
-          if not flow_final.any():
-               warped_I = self.cista_net.prev_rec 
-          else:
-               self.cista_net.prev_rec = self.frame_warp.warp_frame(self.cista_net.prev_rec, flow_final)
-               if self.cista_net.states is not None:
-                    downsampled_flow = nn.functional.interpolate(flow_final, scale_factor=self.scale_factor, mode='bilinear', align_corners=True)
-                    self.cista_net.states[1] = self.frame_warp.warp_frame(self.cista_net.states[1], downsampled_flow)
-               
-          output_dict = self.cista_net(batch_data['event_voxel'])
-          output_dict['flow'] = batch_flow['flow_final'].detach()
-
-          return output_dict

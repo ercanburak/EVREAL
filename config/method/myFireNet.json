@@ -1,6 +1,0 @@
-{
-	"model_name": "myFireNet",
-	"model_path": "pretrained/myFireNet/my_firenet.pth.tar",
-	"event_tensor_normalization": true,
-	"post_process_norm": "none"
-}

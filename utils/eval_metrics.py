@@ -15,7 +15,7 @@ from skimage.metrics import peak_signal_noise_ratio as psnr
 
 from utils.create_vid import create_vid_from_recon_folder
 from utils.eval_utils import cv2torch, torch2cv2
-from utils.eval_utils import append_timestamp, append_result, ensure_dir, save_inferred_image, save_flow, save_events
+from utils.eval_utils import append_timestamp, append_result, ensure_dir, save_inferred_image, save_flow
 
 # ------ For flow --------
 def merge_optical_flow(flow):
@@ -41,66 +41,6 @@ def merge_optical_flow(flow):
     # rgb = cv2.applyColorMap(rgb, cv2.COLORMAP_PARULA) #COLORMAP_PARULA cv2.COLORMAP_SPRING cv2.COLORMAP_COOL
     return rgb
 
-
-# -------- For FWL, real data w/o real flow ----
-def voxel_warping_flow_loss(voxel, displacement, output_images=False, reverse_time=False):
-    """ 
-    Adapted from
-    Stoffregen, Timo, et al. "Reducing the sim-to-real gap for event cameras." Computer Vision–ECCV 2020: 16th European Conference, Glasgow, UK, August 23–28, 2020, Proceedings, Part XXVII 16. Springer International Publishing, 2020.
-    https://github.com/TimoStoff/event_cnn_minimal
-    
-    Adapted from:
-        Temporal loss, as described in Eq. (2) of the paper 'Learning Blind Video Temporal Consistency',
-        Lai et al., ECCV'18.
-
-        This function takes an optic flow tensor and uses this to warp the channels of an
-        event voxel grid to an image. The variance of this image is the resulting loss.
-        :param voxel: [N x C x H x W] input voxel
-        :param displacement: [N x 2 x H x W] displacement map from previous flow tensor to current flow tensor
-    """
-    if reverse_time:
-        displacement = -displacement
-    # if displacement.all():
-    #     voxel_grid_warped_save = voxel.detach()
-    #     voxel_grid_warped = voxel.sum(1)
-    # else:
-    v_shape = voxel.size()
-    t_width, t_height, t_channels = v_shape[3], v_shape[2], v_shape[1]
-    yy, xx = torch.meshgrid(torch.arange(t_height), torch.arange(t_width))  # xx, yy -> WxH
-    xx, yy = xx.to(voxel.device).float(), yy.to(voxel.device).float()
-
-    displacement_x = displacement[:, 0, :, :]  # N x H x W
-    displacement_y = displacement[:, 1, :, :]  # N x H x W
-    displacement_increment = 1.0/(t_channels-1.0)
-    voxel_grid_warped = torch.zeros((v_shape[0], 1, t_height, t_width), dtype=voxel.dtype, device=voxel.device) 
-    
-    voxel_grid_warped_save = torch.zeros((v_shape[0], t_channels, t_height, t_width), dtype=voxel.dtype, device=voxel.device) 
-    for i in range(t_channels):
-        warp_magnitude_ratio = (1.0-i*displacement_increment) if reverse_time else i*displacement_increment
-        #Add displacement to the x coords
-        warping_grid_x = xx + displacement_x*warp_magnitude_ratio # N x H x W
-        #Add displacement to the y coords
-        warping_grid_y = yy + displacement_y*warp_magnitude_ratio # N x H x W
-        warping_grid = torch.stack([warping_grid_x, warping_grid_y], dim=3)  # 1 x H x W x 2
-        #Normalize the warping grid to between -1 and 1 (necessary for grid_sample API)
-        warping_grid[:,:,:,1] = (2.0*warping_grid[:,:,:,1])/(t_height)-1.0
-        warping_grid[:,:,:,0] = (2.0*warping_grid[:,:,:,0])/(t_width)-1.0
-        voxel_channel_warped = F.grid_sample(voxel, warping_grid,  align_corners=True) #, padding_mode='reflection'
-        voxel_grid_warped+=voxel_channel_warped[:, i:i+1, :, :].detach()
-        voxel_grid_warped_save[:, i:i+1, :,:] = voxel_channel_warped[:, i:i+1, :, :].detach()
-
-    variance = voxel_grid_warped.var()
-    tc_loss = variance
-    # tc_loss = -variance
-    # if not reverse_time:
-    #     reverse_tc_loss = voxel_warping_flow_loss(voxel, displacement, output_images=False, reverse_time=True)
-    #     tc_loss += reverse_tc_loss
-    if output_images:
-        additional_output = {'voxel_grid': voxel,
-                             'voxel_grid_warped': voxel_grid_warped_save} #voxel_grid_warped
-        return tc_loss, additional_output
-    else:
-        return tc_loss
 
 
 class BaseMetric:
@@ -161,33 +101,6 @@ class BaseMetric:
     def get_name(self):
         return self.name
 
-
-class FWLMetric(BaseMetric):
-    def __init__(self):
-        super().__init__(name='fwl')
-        self.event_images = None
-
-    def calculate(self, evs, flow, output_images=False, reverse_time=False):
-        output = voxel_warping_flow_loss(evs, flow, output_images=output_images, reverse_time=reverse_time)
-        FWL0 = voxel_warping_flow_loss(evs, torch.zeros_like(flow))
-        
-        if isinstance(output, tuple):
-            self.event_images = output[1]
-            score = output[0] / FWL0
-        else:
-            score = output / FWL0
-        return score
-    
-    def update(self, evs, flow, output_images=False, reverse_time=False):
-        assert evs is not None and flow is not None
-        self.updated = 0
-        score = self.calculate(evs, flow, output_images, reverse_time)
-        if not isinstance(score, list):
-            score = [score]
-        for s in score:
-            if math.isfinite(s) and not math.isnan(s):
-                self.updated += 1
-                self.scores.append(s)
 
 
 class PsnrMetric(BaseMetric):
@@ -297,16 +210,14 @@ class EvalMetricsTracker:
     - Generating videos from images (when create_video is called).
     """
 
-    def __init__(self, save_images=False, save_processed_images=False, save_events=False, save_interval=1, output_dir=None, hist_eq='none',
+    def __init__(self, save_images=False, save_processed_images=False, output_dir=None, hist_eq='none',
                  quan_eval_metric_names=None, quan_eval_start_time=0, quan_eval_end_time=float('inf'),
                  quan_eval_ts_tol_ms=float('inf'), has_reference_frames=False, color=False):
         if quan_eval_metric_names is None:
-            quan_eval_metric_names = ['mse', 'psnr', 'ssim', 'lpips'] #'fwl'
+            quan_eval_metric_names = ['mse', 'psnr', 'ssim', 'lpips']
         self.save_images = save_images
-        self.save_events = save_events
         # self.save_flow = save_flow
         self.save_processed_images = save_processed_images
-        self.save_interval = save_interval
         self.output_dir = output_dir
         self.output_flow_dir = join(output_dir, 'flow')#------ output folder for flow
         
@@ -330,8 +241,6 @@ class EvalMetricsTracker:
                 self.metrics.append(SsimMetric())
             elif metric_name == "psnr": #----
                 self.metrics.append(PsnrMetric())
-            elif metric_name == "fwl": #-----
-                self.metrics.append(FWLMetric())
             elif metric_name in pyiqa_metric_factory.list_of_metrics:
                 self.metrics.append(pyiqa_metric_factory.get_metric(metric_name))
             else:
@@ -362,16 +271,11 @@ class EvalMetricsTracker:
             metric.finish_queue()
             self.save_new_scores(idx, metric)
 
-    def update_quantitative_metrics(self, idx, img, ref, evs=None, flow=None):
+    def update_quantitative_metrics(self, idx, img, ref):
         self.quan_eval_indices.append(idx)
-        event_images = None
         for metric in self.metrics:
             try:
-                #------ add fwl
-                if metric.name == 'fwl':
-                    metric.update(evs, flow, output_images=True)
-                    event_images = metric.event_images #voxel_grid and voxel_grid_warped
-                elif not self.has_reference_frames or metric.no_ref:
+                if not self.has_reference_frames or metric.no_ref:
                     metric.update(img)
                 else:
                     metric.update(img, ref)
@@ -380,9 +284,9 @@ class EvalMetricsTracker:
                 print("Exception in metric " + metric.get_name() + ": " + str(e))
                 print(traceback.format_exc())
                 metric.reset()
-        return event_images
+        # return event_images
     
-    def update(self, idx, img, ref, img_ts, ref_ts=None, flow=None, evs=None):
+    def update(self, idx, img, ref, img_ts, ref_ts=None, flow=None):
         if ref_ts is None:
             ref_ts = img_ts
 
@@ -404,20 +308,17 @@ class EvalMetricsTracker:
         img_ref_time_diff_ms = abs(ref_ts - img_ts) * 1000
         inside_eval_ts_tolerance = img_ref_time_diff_ms <= self.quan_eval_ts_tol_ms
         if inside_eval_cut and inside_eval_ts_tolerance:
-            event_images = self.update_quantitative_metrics(idx, img, ref, evs, flow)
+            self.update_quantitative_metrics(idx, img, ref) #evs, flow
             #------------
-            if idx ==0 or (idx%self.save_interval) == 0:
-                if self.save_images:
-                    save_inferred_image(self.output_dir, org_img, idx)
-                if self.save_processed_images:
-                    save_inferred_image(self.processed_output_dir, img, idx)
-                if self.save_images and flow is not None:
-                    ensure_dir(self.output_flow_dir)
-                    flow = torch2cv2(flow)
-                    rgb_flow = merge_optical_flow(flow)
-                    save_flow(self.output_flow_dir, rgb_flow, idx)
-                if self.save_events:
-                    save_events(self.output_evs_dir, event_images, idx)
+            if self.save_images:
+                save_inferred_image(self.output_dir, org_img, idx)
+            if self.save_processed_images:
+                save_inferred_image(self.processed_output_dir, img, idx)
+            if self.save_images and flow is not None:
+                ensure_dir(self.output_flow_dir)
+                flow = torch2cv2(flow)
+                rgb_flow = merge_optical_flow(flow)
+                save_flow(self.output_flow_dir, rgb_flow, idx)
 
 
 
@@ -466,9 +367,6 @@ class EvalMetricsTracker:
         if self.save_processed_images:
             self.processed_output_dir = self.output_dir + "_processed"
             ensure_dir(self.processed_output_dir)
-        if self.save_events:
-            self.output_evs_dir = join(self.output_dir, 'events') #self.output_dir + "events"
-            ensure_dir(self.output_evs_dir)
 
         timestamps_file_name = self.get_timestamps_file_path()
         open(timestamps_file_name, 'w', encoding="utf-8").close()  # overwrite with emptiness

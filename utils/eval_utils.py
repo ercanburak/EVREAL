@@ -125,6 +125,7 @@ def make_event_preview(events, mode='grayscale', num_bins_to_show=-1):
 
     return event_preview
 
+
 def save_events(folder, event_images, idx):
     #event_images: dict: voxel_grid / voxel_grid_warped
     if 'voxel_grid' in event_images.keys():

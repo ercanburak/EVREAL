@@ -1,6 +1,0 @@
-{
-	"model_name": "CISTA-ERAFT",
-	"model_path": "pretrained/CISTA-ERAFT/cista-eraft.pth.tar",
-	"event_tensor_normalization": true,
-	"post_process_norm": "none"
-}
