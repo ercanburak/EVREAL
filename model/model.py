@@ -188,3 +188,6 @@ class FireNet(nn.Module):
         self._states[1] = x
         x = self.R2(x)
         return {'image': self.pred(x)}
+
+
+

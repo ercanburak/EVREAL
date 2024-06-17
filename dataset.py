@@ -3,8 +3,11 @@ import warnings
 from bisect import bisect_left
 
 import numpy as np
+import cv2
 import torch
 from torch.utils.data import Dataset
+import torch.nn.functional as F
+from torchvision import transforms
 
 # local modules
 from utils.event_utils import events_to_voxel_torch
@@ -26,6 +29,7 @@ class MemMapDataset(Dataset):
             voxel_method = {'method': 'between_frames'}
         self.voxel_method = voxel_method
         self.set_voxel_method()
+        
 
         if max_length is not None:
             self.length = min(self.length, max_length + 1)
@@ -48,7 +52,7 @@ class MemMapDataset(Dataset):
         xs, ys, ts, ps = self.get_events(idx0, idx1)
 
         event_count = len(xs)
-
+        # print(index, self.__len__(), idx0)
         if event_count > 0:
             ts_0, ts_k = ts[0], ts[-1]
             xs = torch.from_numpy(xs.astype(np.float32))
@@ -59,9 +63,10 @@ class MemMapDataset(Dataset):
         else:
             # Event count is zero, so we need to return an empty voxel grid
             # But make sure to return the correct timestamps
+            # print('wrong', idx0, idx1)
             if idx0 > 0:
                 _, _, ts_temp, _ = self.get_events(idx0-1, idx1)
-                ts_0 = ts_temp[-1]
+                ts_0 = ts_temp[-1] #-----------
                 if self.voxel_method['method'] == 't_seconds':
                     ts_k = ts_temp[-1] + self.voxel_method['t']
                 else:
@@ -88,11 +93,8 @@ class MemMapDataset(Dataset):
                                 dtype=torch.float32, device=voxel.device)
             frame_timestamp = torch.tensor(0.0, dtype=torch.float64)
 
-        if self.voxel_method['method'] == 'between_frames':
-            voxel_timestamp = frame_timestamp
-        else:
-            voxel_timestamp = torch.tensor(ts_k, dtype=torch.float64)
-
+        voxel_timestamp = torch.tensor(ts_k, dtype=torch.float64)
+        
         item = {'frame': frame,
                 'events': voxel,
                 'frame_timestamp': frame_timestamp,
@@ -128,6 +130,41 @@ class MemMapDataset(Dataset):
             idx1 = idx0 + self.voxel_method['k']
             k_indices.append([idx0, idx1])
         return k_indices
+
+    #---------------- My compute_low_k_indices ---------------
+    def compute_low_k_indices(self):
+        """
+        find the start and end indices of the corresponding events per reconstruction 
+        according to N and k
+        N:  the number of events between frames
+        k:  the target event count per reconstruction
+        
+        We either divide events between two consecutive frames into multiple groups 
+        or combine events across several frames into a single group for the reconstruction and flow estimation.
+        """
+        k_indices = []
+        start_idx = 0
+        prev_idx = 0
+        NE_per_rec = 0
+        for event_idx in self.filehandle["image_event_indices"]:
+            end_idx = event_idx[0]
+            N = end_idx - prev_idx #start_idx
+            prev_idx = end_idx
+            NE_per_rec += N
+            if NE_per_rec >= self.voxel_method['k']:
+                num_evs = round((NE_per_rec) / self.voxel_method['k'])
+                split_indices = np.linspace(start_idx, end_idx, num_evs + 1, dtype=int)
+                for m in range(len(split_indices)-1):
+                    k_indices.append([split_indices[m], split_indices[m+1]])
+                # frame_indices.append([start_idx, end_idx])
+                start_idx = end_idx
+                NE_per_rec = 0
+            else:
+                continue
+        # print(len(self.filehandle["image_event_indices"]))
+        # print(len(k_indices))
+        return k_indices
+
 
     def choose_frames_to_use(self):
         self.frames_to_use = list(range(0, self.num_frames))
@@ -173,6 +210,11 @@ class MemMapDataset(Dataset):
         if self.voxel_method['method'] == 'k_events':
             self.length = max(int(self.num_events / (self.voxel_method['k'] - self.voxel_method['sliding_window_w'])), 0)
             self.event_indices = self.compute_k_indices()
+        #------------- My 'low_k_events' --------------#
+        elif self.voxel_method['method'] == 'low_k_events':
+            self.event_indices =  self.compute_low_k_indices()
+            self.length = len(self.event_indices)
+        #----------------------------------------------#
         elif self.voxel_method['method'] == 't_seconds':
             duration = self.tk - self.t0
             self.length = max(int(duration / (self.voxel_method['t'] - self.voxel_method['sliding_window_t'])), 0)
@@ -181,6 +223,7 @@ class MemMapDataset(Dataset):
             assert self.has_images, "Cannot use between_frames voxel method without images"
             self.length = self.num_frames - 1
             self.event_indices = self.compute_frame_indices()
+            # print('self.event_indices', self.event_indices)
             self.choose_frames_to_use()
         else:
             raise ValueError("Invalid voxel forming method chosen ({})".format(self.voxel_method))
@@ -289,6 +332,15 @@ class MemMapDataset(Dataset):
         start_idx = 0
         for event_idx in self.filehandle["image_event_indices"]:
             end_idx = event_idx[0]
-            frame_indices.append([start_idx, end_idx])
-            start_idx = end_idx
+            # frame_indices.append([start_idx, end_idx])
+            # print([start_idx, end_idx])
+            if end_idx < start_idx:
+                end_idx = start_idx
+                # print([start_idx, end_idx])
+                frame_indices.append([start_idx, end_idx])
+            else:
+                frame_indices.append([start_idx, end_idx])
+                start_idx = end_idx
         return frame_indices
+
+

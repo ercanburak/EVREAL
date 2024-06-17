@@ -1,150 +1,106 @@
-# EVREAL (Event-based Video Reconstruction Evaluation and Analysis Library)
+# CISTA-EVREAL 
 
-[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://ercanburak-evreal.hf.space/)
-[![arxiv.org](http://img.shields.io/badge/cs.CV-arXiv%3A2305.00434-B31B1B.svg)](https://arxiv.org/abs/2305.00434/)
+This repository is the modification of [EVREAL](https://github.com/ercanburak/EVREAL) (Event-based Video Reconstruction Evaluation and Analysis Library) by intergrating our family of CISTA networks, which includes [CISTA-TC](https://ieeexplore.ieee.org/abstract/document/9746331), [CISTA-LSTC](https://ieeexplore.ieee.org/abstract/document/10130595) and [CISTA-Flow](https://arxiv.org/pdf/2403.11961). The original repository for CISTA-TC and CISTA-LSTC is [V2E2V](https://github.com/lsying009/V2E2V). Furthermore, we have made some changes for our evaluation, as described in [CISTA-Flow](https://arxiv.org/pdf/2403.11961). The main modifications are listed below:
 
-This is the official repository for the [CVPRW 2023](https://tub-rip.github.io/eventvision2023/) paper **[EVREAL: Towards a Comprehensive Benchmark and Analysis Suite for Event-based Video Reconstruction](https://arxiv.org/abs/2305.00434)** by [Burak Ercan](https://ercanburak.github.io/), [Onur Eker](https://github.com/ekeronur/), [Aykut Erdem](https://aykuterdem.github.io/), and [Erkut Erdem](https://web.cs.hacettepe.edu.tr/~erkut/).
+## Modifications
 
-In this work, we present **EVREAL**, an open-source framework that offers a unified evaluation pipeline to comprehensively benchmark PyTorch based **pre-trained neural networks** for **event-based video reconstruction**, and a result analysis tool to **visualize and compare** reconstructions and their scores.
+### Intergrate CISTA family and our pretrained models
 
-![An overall look at our proposed EVREAL (Event-based Video Reconstruction – Evaluation and Analysis Library) toolkit.](https://ercanburak.github.io/projects/evreal/diagram.png "An overall look at our proposed EVREAL (Event-based Video Reconstruction – Evaluation and Analysis Library) toolkit.")
+We added code for our CISTA family networks in ```CISTAFlow/e2v/e2v_model.py```, including CISTA, CISTA-TC, CISTA-LSTC and CISTA-Flow. The ```DCEIFlowCistaNet``` and ```ERAFTCistaNet``` are both CISTA-Flow networks that integrate [DCEIFlow](https://github.com/danqu130/DCEIFlow) and [ERAFT](https://github.com/uzh-rpg/E-RAFT) into CISTA-LSTC for motion compensation, respectively. In the evaluation, these two networks are referred to as CISTA-EIFlow and CISTA-ERAFT.
+
+The pretrained models are located under ```pretrained```. Note that CISTA-LSTC has three checkpoints: ```cista-lstc-old.pth.tar```, ```cista-lstc.pth.tar```, ```cista-lstc-randNE.pth.tar```. CISTA-EIFlow has two checkpoints: ```cista-eiflow.pth.tar``` and ```cista-lstc-randNE.pth.tar```. Details please refer to [pretrained/CISTA-LSTC/readme.md](pretrained/CISTA-LSTC/readme.md) and [pretrained/CISTA-EIFlow/readme.md](pretrained/CISTA-EIFlow/readme.md).
+
+The ```cista-lstc.pth.tar``` checkpoint is used in the [CISTA-Flow paper](https://arxiv.org/pdf/2403.11961), while the old version is used in the [TPAMI paper](https://ieeexplore.ieee.org/abstract/document/10130595) and the [V2E2V repository](https://github.com/lsying009/V2E2V). The training datasets and strategies are slightly different for these two checkpoints. Note that the new version is not necessarily better than the old one.
+
+In addition, we have included pretrained models for E2VID, FireNet, and SPADE-E2VID, labeled as ```myE2VID```, ```myFireNet``` and ```mySPADE```.
 
 
-For more details please see our [paper](https://arxiv.org/abs/2305.00434). 
+### New evaluation method: ```low_k_events```
 
-For qualitative and quantitative experimental analyses please see our [project website](https://ercanburak.github.io/evreal.html), or [interactive demo](https://ercanburak-evreal.hf.space/).
+We have added a new evaluation method: ```low_k_events```. If the target number of events per reconstruction is $k$, We either divide events between two consecutive frames by $k$ into multiple groups or combine events across several frames into a single group for the reconstruction and flow estimation. Related configuration is in ```config/eval/low_k_events.json```.
 
-## News
-- Second version of our EVREAL paper, which includes updated results, is [published at arXiv](https://arxiv.org/abs/2305.00434) now. 
-- Codes for robustness analysis are added. Please see the [example commands](#example-commands) below.
-- Codes for downstream tasks are added. Please refer to the [README file for downstream tasks](downstream_tasks/README.md) for instructions on performing object detection, image classification, and camera calibration experiments. 
-- Codes for color reconstruction added.
-- Evaluation codes are published now. Please see below for [installation](#installation), [dataset preparation](#preparing-datasets) and [usage](#usage) instructions. (Codes for robustness analysis and downstream tasks will be published soon.)
-- In our [result analysis tool](https://ercanburak-evreal.hf.space/), we also share results of **a new state-of-the-art model, HyperE2VID,** which generates higher-quality videos than previous state-of-the-art, while also reducing memory consumption and inference time. Please see the [HyperE2VID webpage](https://ercanburak.github.io/HyperE2VID.html) for more details.
-- The web application of our result analysis tool is ready now. [Try it here](https://ercanburak-evreal.hf.space/) to interactively visualize and compare qualitative and quantitative results of event-based video reconstruction methods.
-- We will present our work at the CVPR Workshop on Event-Based Vision in person, on the 19th of June 2023, during Session 2 (starting at 10:30 local time). Please see the [workshop website](https://tub-rip.github.io/eventvision2023/) for details.
-
-## Installation
-
-Installing the packages required for evaluation, in a conda environment named `evreal`:
-```
-conda create -y -n evreal python=3.10
-conda activate evreal
-conda install pytorch torchvision pytorch-cuda=12.1 -c pytorch -c nvidia
-pip install -r requirements.txt
+```json
+"voxel_method": {
+            "method": "low_k_events",
+            "k": 15000
+        },
 ```
 
-## Preparing Datasets
+### New evaluation metrics
+We have added PSNR and [forward warping loss (FWL)](https://link.springer.com/chapter/10.1007/978-3-030-58583-9_32) in evaluation. The FWL is only used for optical flow estimation of CISTA-Flow when no ground truth flow is available.
 
-EVREAL processes event datasets in a numpy memmap format similar to the format of [event_utils](https://github.com/TimoStoff/event_utils/) library. The datasets used for the experiments presented in our paper are the [ECD](https://rpg.ifi.uzh.ch/davis_data.html), [MVSEC](https://daniilidis-group.github.io/mvsec/), [HQF](https://timostoff.github.io/20ecnn), [BS-ERGB](https://github.com/uzh-rpg/timelens-pp/), and the [HDR](https://rpg.ifi.uzh.ch/E2VID.html) datasets.
+### Other modifications
+```save_interval: int```: save data (frame / events / flow) every ```save_interval``` frames
 
-In the [tools](tools) folder, we present tools to download these datasets and convert their format. Here, you can find commands to install a separate conda environment named `evreal-tools`, and commands to download and install aforementioned datasets (except BS-ERGB). After preparing the datasets with these commands, the dataset folder should look as follows:
+```save_events: bool``` : is save corresponding event frames
 
-```
-├── EVREAL
-  ├── data
-    ├── ECD  # First dataset
-      ├── boxes_6dof  # First sequence
-        ├── events_p.npy
-        ├── events_ts.npy
-        ├── events_xy.npy
-        ├── image_event_indices.npy
-        ├── images.npy
-        ├── images_ts.npy
-        ├── metadata.json
-      ├── calibration  # Second sequence
-      ├── ...
-    ├── HQF  # Second dataset
-    ├── ...
-```
 
 ## Usage
+For detailed usage, please refer to [EVREAL](https://github.com/ercanburak/EVREAL). 
 
-The main script of EVREAL is [eval.py](eval.py). This script takes a set of evaluation settings, methods, datasets, and evaluation metrics as command line arguments, and generates reconstructed images and scores using each given method and for each sequence in the given datasets. For example, the following command evaluates the E2VID and HyperE2VID **m**ethods using the `std` evaluation **c**onfiguration, on the ECD **d**ataset, using the MSE, SSIM and LPIPS **q**uantitative **m**etrics:
-
+Example:
 ```bash
-python eval.py -m E2VID HyperE2VID -c std -d ECD -qm mse ssim lpips
-```
-
-Each evaluation configuration, method, and dataset has a specific json formatted file in [config/eval](config/eval), [config/method](config/method), and [config/dataset](config/dataset) folders, respectively. Therefore the example command given above reads the settings to use from the [std.json](config/eval/std.json), [ECD.json](config/dataset/ECD.json), [E2VID.json](config/method/E2VID.json), and [HyperE2VID.json](config/method/HyperE2VID.json) files. For the MSE and SSIM metrics, the implementations from [scikit-image library](https://scikit-image.org/docs/stable/api/skimage.metrics.html) are used. For all the other metrics, we use the [PyTorch IQA Toolbox](https://github.com/chaofengc/IQA-PyTorch/).
-
-#### Outputs
-
-After the evaluation is finished, the scores of each method in each dataset are printed in a table format, and the results are stored in `outputs` folder in the following structure:
-```
-├── EVREAL
-  ├── outputs
-    ├── std  # Evaluation config
-      ├── ECD  # Dataset
-        ├── boxes_6dof  # Sequence 
-          ├── E2VID  # Method
-            ├── mse.txt  # MSE scores
-            ├── ssim.txt  # SSIM scores
-            ├── lpips.txt  # LPIPS scores
-            ├── frame_0000000000.png  # Reconstructed frames 
-            ├── frame_0000000001.png
-            ├── ...
-          ├── HyperE2VID
-            ├── ...
-```
-
-#### Example Commands
-
-To generate full-reference metric scores for each method on four datasets (as in Table 2 of the paper, with the addition of the new method HyperE2VID):
-
-```bash
-python eval.py -m E2VID FireNet E2VID+ FireNet+ SPADE-E2VID SSL-E2VID ET-Net HyperE2VID -c std -d ECD MVSEC HQF BS_ERGB_handheld -qm mse ssim lpips
-```
-
-To generate no-reference metric scores for each method on ECD-FAST and MVSEC-NIGHT datasets (as in Table 3 of the paper, with the addition of the new method HyperE2VID):
-```bash
-python eval.py -m E2VID FireNet E2VID+ FireNet+ SPADE-E2VID SSL-E2VID ET-Net HyperE2VID -c std -d ECD_fast MVSEC_night -qm brisque niqe maniqa
-```
-
-To generate no-reference metric scores for each method on HDR datasets (as in Table 3 of the paper, with the addition of the new method HyperE2VID):
-```bash
-python eval.py -m E2VID FireNet E2VID+ FireNet+ SPADE-E2VID SSL-E2VID ET-Net HyperE2VID -c t40ms -d TPAMI20_HDR -qm brisque niqe maniqa
-```
-
-To perform robustness experiments:
-```bash
-python eval.py -m E2VID FireNet E2VID+ FireNet+ SPADE-E2VID SSL-E2VID ET-Net HyperE2VID -c k5k k10k k15k k20k k25k k30k k35k k40k k45k -d ECD MVSEC HQF -qm mse ssim lpips
-python eval.py -m E2VID FireNet E2VID+ FireNet+ SPADE-E2VID SSL-E2VID ET-Net HyperE2VID -c t10ms t20ms t30ms t40ms t50ms t60ms t70ms t80ms t90ms t100ms -d ECD MVSEC HQF -qm mse ssim lpips
-python eval.py -m E2VID FireNet E2VID+ FireNet+ SPADE-E2VID SSL-E2VID ET-Net HyperE2VID -c kr0.1 kr0.2 kr0.3 kr0.4 kr0.5 kr0.6 kr0.7 kr0.8 kr0.9 kr1.0 -d ECD MVSEC HQF -qm mse ssim lpips
-python analyze_robustness.py
-```
-
-To generate color reconstructions on CED dataset:
-```bash
-python eval.py -m HyperE2VID -c color -d CED 
-```
-
-## Citations
-
-If you use this library in an academic context, please cite the following:
-
-```
-@inproceedings{ercan2023evreal,
-title={{EVREAL}: Towards a Comprehensive Benchmark and Analysis Suite for Event-based Video Reconstruction},
-author={Ercan, Burak and Eker, Onur and Erdem, Aykut and Erdem, Erkut},
-booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops},
-month={June},
-year={2023},
-pages={3942-3951}}
+python eval.py \
+-m CISTA-TC CISTA-LSTC CISTA-EIFlow CISTA-ERAFT \
+-c low_k_events \
+-d ECD HQF \
+-qm mse psnr ssim lpips \
 ```
 
 ## Acknowledgements
 
-- This work was supported in part by KUIS AI Center Research Award, TUBITAK-1001 Program Award No. 121E454, and BAGEP 2021 Award of the Science Academy to A. Erdem.
-- This code borrows from or inspired by the following open source repositories:
-  - https://github.com/TimoStoff/event_cnn_minimal
-  - https://github.com/TimoStoff/event_utils/
-- Here are the open-source repositories (with model codes and pretrained models) of the methods that we compare with EVREAL:
-  - [E2VID](https://github.com/uzh-rpg/rpg_e2vid)
-  - [FireNet](https://github.com/cedric-scheerlinck/rpg_e2vid/tree/cedric/firenet)
-  - [E2VID+](https://github.com/TimoStoff/event_cnn_minimal)
-  - [FireNet+](https://github.com/TimoStoff/event_cnn_minimal)
-  - [SPADE-E2VID](https://github.com/RodrigoGantier/SPADE_E2VID)
-  - [SSL-E2VID](https://github.com/tudelft/ssl_e2vid)
-  - [ET-Net](https://github.com/WarranWeng/ET-Net)
-  - [HyperE2VID](https://github.com/ercanburak/HyperE2VID)
+Related open-source repositories:
+- [V2E2V](https://github.com/lsying009/V2E2V) 
+- [DCEIFlow](https://github.com/danqu130/DCEIFlow)
+- [ERAFT](https://github.com/uzh-rpg/E-RAFT)
+- [EVREAL](https://github.com/ercanburak/EVREAL) 
+- [event_cnn_minimal](https://github.com/TimoStoff/event_cnn_minimal)
+
+We also provided codes for generating training datasets for video-to-events reconstruction:
+- [V2E_generation](https://github.com/lsying009/V2E_Generation)
+
+## Citations
+If you use this library, please cite the following:
+```bibtex
+  @inproceedings{ercan2023evreal,
+    title={{EVREAL}: Towards a Comprehensive Benchmark and Analysis Suite for Event-based Video Reconstruction},
+    author={Ercan, Burak and Eker, Onur and Erdem, Aykut and Erdem, Erkut},
+    booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops},
+    month={June},
+    year={2023},
+    pages={3942-3951}}
+```
+
+If you use the family of CISTA networks, please cite the publications as follows:
+```bibtex
+  @misc{liu2024enhanced,
+    title={Enhanced Event-Based Video Reconstruction with Motion Compensation}, 
+    author={Siying Liu and Pier Luigi Dragotti},
+    year={2024},
+    eprint={2403.11961},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV}
+}
+```
+```bibtex
+  @article{liu_sensing_2023,  
+    title={Sensing Diversity and Sparsity Models for Event Generation and Video Reconstruction from Events},   
+    author={Liu, Siying and Dragotti, Pier Luigi},  
+    journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},  
+    year={2023},  
+    pages={1-16},  
+    publisher={IEEE}. 
+    doi={10.1109/TPAMI.2023.3278940}. 
+    }
+```
+```bibtex
+  @inproceedings{liu_convolutional_2022,  
+    title={Convolutional ISTA Network with Temporal Consistency Constraints for Video Reconstruction from Event Cameras},  
+    author={Liu, Siying and Alexandru, Roxana and Dragotti, Pier Luigi},  
+    booktitle={ICASSP 2022-2022 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},  
+    pages={1935--1939},  
+    year={2022},  
+    organization={IEEE}. 
+    doi={10.1109/ICASSP43922.2022.9746331}. 
+    }
+```

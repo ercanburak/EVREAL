@@ -1,4 +1,4 @@
-cd data
+cd /rds/general/user/sl220/home/data/EVREAL_data
 mkdir ECD
 cd ECD
 wget https://rpg.ifi.uzh.ch/datasets/davis/boxes_6dof.bag

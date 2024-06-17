@@ -2,17 +2,45 @@ import math
 import shutil
 import traceback
 from os.path import join
+import os
 import warnings
+import torch.nn.functional as F
 
 import cv2
 import numpy as np
 import torch
 from skimage.metrics import mean_squared_error as mse
 from skimage.metrics import structural_similarity as ssim
+from skimage.metrics import peak_signal_noise_ratio as psnr
 
 from utils.create_vid import create_vid_from_recon_folder
-from utils.eval_utils import cv2torch
-from utils.eval_utils import append_timestamp, append_result, ensure_dir, save_inferred_image
+from utils.eval_utils import cv2torch, torch2cv2
+from utils.eval_utils import append_timestamp, append_result, ensure_dir, save_inferred_image, save_flow
+
+# ------ For flow --------
+def merge_optical_flow(flow):
+    '''Merge flow in HSV to show'''
+    
+    flow_x, flow_y = flow[0,...], flow[1,...]
+    h, w = flow_x.shape[:2]
+    hsv = np.zeros((h, w, 3), dtype=np.uint8)
+    hsv[..., 0] = 255
+    hsv[..., 1] = 255
+
+    # Convert flow to polar coordinates (magnitude, angle)
+    magnitude, angle = cv2.cartToPolar(flow_x, flow_y)
+
+    # Map angle to hue
+    hsv[..., 0] = angle * 180 / np.pi / 2
+
+    # Normalize magnitude to 0-255
+    # hsv[..., 2] = cv2.normalize(magnitude, None, 0, 255, cv2.NORM_MINMAX)
+    hsv[..., 2] = (255 * magnitude / magnitude.max()).astype(np.uint8)
+    # Convert HSV to RGB
+    rgb = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+    # rgb = cv2.applyColorMap(rgb, cv2.COLORMAP_PARULA) #COLORMAP_PARULA cv2.COLORMAP_SPRING cv2.COLORMAP_COOL
+    return rgb
+
 
 
 class BaseMetric:
@@ -72,6 +100,17 @@ class BaseMetric:
 
     def get_name(self):
         return self.name
+
+
+
+class PsnrMetric(BaseMetric):
+
+    def __init__(self):
+        super().__init__(name='psnr')
+
+    def calculate(self, img, ref):
+        score = psnr(ref, img)
+        return score
 
 
 class MseMetric(BaseMetric):
@@ -175,10 +214,13 @@ class EvalMetricsTracker:
                  quan_eval_metric_names=None, quan_eval_start_time=0, quan_eval_end_time=float('inf'),
                  quan_eval_ts_tol_ms=float('inf'), has_reference_frames=False, color=False):
         if quan_eval_metric_names is None:
-            quan_eval_metric_names = ['mse', 'ssim', 'lpips']
+            quan_eval_metric_names = ['mse', 'psnr', 'ssim', 'lpips']
         self.save_images = save_images
+        # self.save_flow = save_flow
         self.save_processed_images = save_processed_images
         self.output_dir = output_dir
+        self.output_flow_dir = join(output_dir, 'flow')#------ output folder for flow
+        
         self.hist_eq = hist_eq
         self.quan_eval_start_time = quan_eval_start_time
         self.quan_eval_end_time = quan_eval_end_time
@@ -197,6 +239,8 @@ class EvalMetricsTracker:
                 self.metrics.append(MseMetric())
             elif metric_name == "ssim":
                 self.metrics.append(SsimMetric())
+            elif metric_name == "psnr": #----
+                self.metrics.append(PsnrMetric())
             elif metric_name in pyiqa_metric_factory.list_of_metrics:
                 self.metrics.append(pyiqa_metric_factory.get_metric(metric_name))
             else:
@@ -240,8 +284,9 @@ class EvalMetricsTracker:
                 print("Exception in metric " + metric.get_name() + ": " + str(e))
                 print(traceback.format_exc())
                 metric.reset()
-
-    def update(self, idx, img, ref, img_ts, ref_ts=None):
+        # return event_images
+    
+    def update(self, idx, img, ref, img_ts, ref_ts=None, flow=None):
         if ref_ts is None:
             ref_ts = img_ts
 
@@ -253,24 +298,29 @@ class EvalMetricsTracker:
         img = np.clip(img, 0.0, 1.0)
         if self.has_reference_frames:
             ref = np.clip(ref, 0.0, 1.0)
-
-        if self.save_images:
-            save_inferred_image(self.output_dir, img, idx)
-
+        #------------
+        org_img = np.copy(img)
         img = self.histogram_equalization(img)
         if self.has_reference_frames:
             ref = self.histogram_equalization(ref)
 
-        if self.save_processed_images:
-            save_inferred_image(self.processed_output_dir, img, idx)
-
         inside_eval_cut = self.quan_eval_start_time <= img_ts <= self.quan_eval_end_time
         img_ref_time_diff_ms = abs(ref_ts - img_ts) * 1000
         inside_eval_ts_tolerance = img_ref_time_diff_ms <= self.quan_eval_ts_tol_ms
-        if self.only_no_ref:
-            inside_eval_ts_tolerance = True
-        if inside_eval_cut and inside_eval_ts_tolerance and not self.color:
-            self.update_quantitative_metrics(idx, img, ref)
+        if inside_eval_cut and inside_eval_ts_tolerance:
+            self.update_quantitative_metrics(idx, img, ref) #evs, flow
+            #------------
+            if self.save_images:
+                save_inferred_image(self.output_dir, org_img, idx)
+            if self.save_processed_images:
+                save_inferred_image(self.processed_output_dir, img, idx)
+            if self.save_images and flow is not None:
+                ensure_dir(self.output_flow_dir)
+                flow = torch2cv2(flow)
+                rgb_flow = merge_optical_flow(flow)
+                save_flow(self.output_flow_dir, rgb_flow, idx)
+
+
 
     def save_custom_metric(self, idx, metric_name, metric_value, is_int=False):
         metric_file_path = join(self.output_dir, metric_name + '.txt')
@@ -317,6 +367,7 @@ class EvalMetricsTracker:
         if self.save_processed_images:
             self.processed_output_dir = self.output_dir + "_processed"
             ensure_dir(self.processed_output_dir)
+
         timestamps_file_name = self.get_timestamps_file_path()
         open(timestamps_file_name, 'w', encoding="utf-8").close()  # overwrite with emptiness
         for metric in self.metrics:

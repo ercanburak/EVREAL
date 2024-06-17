@@ -1,3 +1,5 @@
+'''add save_flow, make_event_preview, save_events'''
+
 from os.path import join
 from pathlib import Path
 
@@ -82,3 +84,61 @@ def save_inferred_image(folder, image, idx):
     png_path = join(folder, png_name)
     image_for_png = np.round(image * 255).astype(np.uint8)
     cv2.imwrite(png_path, image_for_png)
+
+
+def save_flow(folder, flow, idx):
+    png_name = 'frame_{:010d}.png'.format(idx)
+    png_path = join(folder, png_name)
+    cv2.imwrite(png_path, flow)
+
+
+def make_event_preview(events, mode='grayscale', num_bins_to_show=-1):
+    # events: [1 x C x H x W] event numpy or [C x H x W]
+    # num_bins_to_show: number of bins of the voxel grid to show. -1 means show all bins.
+    if events.ndim == 3:
+        events = np.expand_dims(events,axis=0)
+    if num_bins_to_show < 0:
+        sum_events = np.sum(events[0, :, :, :], axis=0)
+        # sum_events = np.sum(events[0, :, :, :], axis=0)
+    else:
+        sum_events = np.sum(events[0, -num_bins_to_show:, :, :], axis=0)
+
+    if mode == 'red-blue':
+        # Red-blue mode
+        # positive events: blue, negative events: red
+        event_preview = np.zeros((sum_events.shape[0], sum_events.shape[1], 3), dtype=np.uint8)
+        b = event_preview[:, :, 0]
+        r = event_preview[:, :, 2]
+        
+        b[sum_events > 0] = 255 #np.clip((255.0 * (sum_events[sum_events>0] - m) / (M - m)), 0, 255).astype(np.uint8) #255
+        r[sum_events < 0] = 255 #np.clip((255.0 * (sum_events[sum_events<0] - m) / (M - m)), 0, 255).astype(np.uint8) #255
+    else:
+        # Grayscale mode
+        # normalize event image to [0, 255] for display
+        
+        m, M = -5.0, 5.0 #-5.0, 5.0
+        # M = (sum_events.max() - sum_events.min())/2
+        # m = -M
+        
+        event_preview = np.clip((255.0 * (sum_events - m) / (M - m)), 0, 255).astype(np.uint8)
+        # event_preview = np.clip((255.0 * (sum_events - sum_events.min()) / (sum_events.max() - sum_events.min())).astype(np.uint8), 0, 255)
+
+    return event_preview
+
+
+def save_events(folder, event_images, idx):
+    #event_images: dict: voxel_grid / voxel_grid_warped
+    if 'voxel_grid' in event_images.keys():
+        evs= event_images['voxel_grid']
+        # print('evs', evs.max(), evs.min())
+        event_img = make_event_preview(evs.cpu().data.numpy(), mode='grayscale', num_bins_to_show=-1) #'red-blue'
+        png_name = 'frame_{:010d}.png'.format(idx)
+        png_path = join(folder, png_name)
+        cv2.imwrite(png_path, event_img)
+    if 'voxel_grid_warped' in event_images.keys():
+        warped_evs= event_images['voxel_grid_warped']
+        # print('warped_evs', warped_evs.max(), warped_evs.min())
+        event_img = make_event_preview(warped_evs.cpu().data.numpy(), mode='grayscale', num_bins_to_show=-1) #'red-blue'
+        png_name = 'frame_{:010d}_warped.png'.format(idx)
+        png_path = join(folder, png_name)
+        cv2.imwrite(png_path, event_img)

@@ -1,5 +1,5 @@
 {
-    "root_path": "data/MVSEC",
+    "root_path": "/rds/general/user/sl220/home/data/EVREAL_data/MVSEC",
     "sequences": 
     {
         "outdoor_night1_data": {},

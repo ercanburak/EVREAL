@@ -19,6 +19,9 @@ from utils.eval_utils import torch2cv2, normalize
 from utils.timers import CudaTimer
 from utils.util import CropParameters, read_json, get_height_width
 
+from CISTAFlow.e2v.e2v_model import CistaLSTCNet, DCEIFlowCistaNet
+
+
 color_progress = chalk.cyan.bold
 color_error = chalk.red.bold
 color_scores = chalk.green.bold
@@ -127,7 +130,18 @@ def get_model_from_checkpoint_path(model_name, checkpoint_path):
     each checkpoint is parsed and each model class is instantiated with the correct parameters.
     """
     checkpoint = torch.load(checkpoint_path, device)
-    if model_name == "SPADE-E2VID":
+    
+   
+    if "CISTA-LSTC" in model_name:
+        last_name = model_name.split('-')[-1]
+        model = CistaLSTCNet()
+        model.num_encoders = 3 # for cropper
+        state_dict = checkpoint['state_dict']
+    elif "CISTA-EIFlow" in model_name:
+        model = DCEIFlowCistaNet()
+        model.num_encoders = 3 # for cropper
+        state_dict = checkpoint['state_dict']
+    elif model_name in ["SPADE-E2VID"]:
         model = model_arch.SpadeE2vid()
         model.num_encoders = 3
         state_dict = checkpoint
@@ -169,7 +183,7 @@ def get_eval_metrics_tracker(dataset_name, eval_config, method_name, sequence, m
 
     save_images = eval_config.get('save_images', True)
     save_processed_images = save_images and eval_config['histeq'] != 'none'
-
+    
     has_reference_frames = sequence["data_loader"].dataset.has_images
     color = eval_config.get('color', False)
 
@@ -186,7 +200,7 @@ def get_eval_metrics_tracker(dataset_name, eval_config, method_name, sequence, m
     return eval_metrics_tracker
 
 
-def eval_method_on_sequence(dataset_name, eval_config, method_name, model, method_config, sequence, metrics):
+def eval_method_on_sequence(dataset_name, eval_config, method_name, model, method_config, sequence, metrics, model_name): #---add model_name---
     """
     Evaluates a method on a single sequence from a dataset, using the given evaluation configuration and metrics.
     """
@@ -200,6 +214,7 @@ def eval_method_on_sequence(dataset_name, eval_config, method_name, model, metho
     event_tensor_normalization = method_config.get('event_tensor_normalization', False)
     color = eval_config.get('color', False)
     idx = 0
+    old_voxel = None
     for idx, item in enumerate(tqdm(data_loader)):
         if has_reference_frames:
             ref_frame = item['frame']
@@ -222,19 +237,30 @@ def eval_method_on_sequence(dataset_name, eval_config, method_name, model, metho
         if event_tensor_normalization:
             voxel = normalize_event_tensor(voxel)
         voxel = voxel.to(device)
-        if not color:
-            voxel = cropper.pad(voxel)
-        with CudaTimer(method_name):
-            output = model(voxel)
-        if not color:
-            image = cropper.crop(output['image'])
+        voxel = cropper.pad(voxel)
+        #------------ input data for CISTAs --------
+        if 'CISTA-EIFlow' in model_name:
+            batch_data = {'event_voxel':voxel}
+            with CudaTimer(method_name):
+                output = model(batch_data)
         else:
-            image = output['image']
+            with CudaTimer(method_name):
+                output = model(voxel)
+
+        image = cropper.crop(output['image'])
         image = torch2cv2(image)
         image = post_process_normalization(image, post_process_norm)
+        #-------output flow (CISTA-EIFlow)-------------
+        if 'flow' in output.keys():
+            flow = output['flow']
+        else:
+            flow = None
         if has_reference_frames:
             ref_frame = torch2cv2(ref_frame)
-        eval_metrics_tracker.update(idx, image, ref_frame, pred_frame_ts, ref_frame_ts)
+            #---------add post normalization for ECD and MVSEC datasets (due to low contrast)------------
+            if dataset_name in ['ECD', 'MVSEC']:
+                ref_frame = post_process_normalization(ref_frame, 'standard')
+        eval_metrics_tracker.update(idx, image, ref_frame, pred_frame_ts, ref_frame_ts, flow) #-----add flow ----
         eval_metrics_tracker.save_custom_metric(idx, "event_rate", event_rate)
     eval_metrics_tracker.finalize(idx)
     num_evaluated = eval_metrics_tracker.get_num_quan_evaluations()
@@ -339,12 +365,9 @@ def eval_method_with_config(eval_config, method_name, datasets, metrics):
     print(color_progress("Starting method " + method_name))
     checkpoint_path = method_config['model_path']
     model_name = method_config['model_name']
-    color = eval_config.get('color', False)
     method_metrics = []
     try:
         model = get_model_from_checkpoint_path(model_name, checkpoint_path)
-        if color:
-            model = ColorNet(model)
     except Exception as e:
         print(color_error(f"Exception while getting method {method_name} from checkpoint path {checkpoint_path}"))
         print(color_error(e))
@@ -361,7 +384,8 @@ def eval_method_with_config(eval_config, method_name, datasets, metrics):
                 print(color_progress(f"Evaluating {method_name} method with {eval_config['name']} evaluation config"
                                      f" on {sequence['name']} sequence from {dataset['name']} dataset. "
                                      f"({sequence_no}/{num_sequences} for this method and config)"))
-                results = eval_method_on_sequence(dataset['name'], eval_config, method_name, model, method_config, sequence, metrics)
+
+                results = eval_method_on_sequence(dataset['name'], eval_config, method_name, model, method_config, sequence, metrics, model_name) #---add model_name---
                 num_evaluated, mean_scores = results
                 sequence_no += 1
                 for metric_name, score in mean_scores.items():
@@ -421,7 +445,7 @@ def evaluate(method_names, eval_config_names=None, dataset_names=None, metrics=N
         the https://github.com/chaofengc/IQA-PyTorch repo.
     """
     if method_names is None:
-        method_names = ['E2VID', 'E2VID+', 'FireNet', 'FireNet+', 'SPADE-E2VID', 'SSL-E2VID', 'ET-Net', 'HyperE2VID']
+        method_names = [ 'CISTA-LSTC', 'CISTA-EIFlow', 'E2VID', 'E2VID+', 'FireNet', 'FireNet+', 'SPADE-E2VID', 'SSL-E2VID', 'ET-Net', 'HyperE2VID']
     if eval_config_names is None:
         eval_config_names = ['std']
     if dataset_names is None:
@@ -451,5 +475,6 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--dataset', nargs='+', type=str, help='datasets')
     parser.add_argument('-qm', '--metrics', nargs='+', type=str,
                         help='quantitative evaluation metrics that will be used calculate scores')
+
     args = parser.parse_args()
     evaluate(args.method, args.config, args.dataset, args.metrics)
